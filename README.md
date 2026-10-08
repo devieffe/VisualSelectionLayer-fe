@@ -1,4 +1,6 @@
-# Enhanced page content selection
+# Visual selection layer
+
+Enhanced page content selection
 
 <p align="center"><img src="demo.gif" alt="Visual selection layer demo: selections merging into one rounded layer" width="480"></p>
 

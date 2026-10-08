@@ -31,6 +31,14 @@ body {
   display: flex;
   flex-direction: column;
   padding: clamp(24px, 5vh, 56px) clamp(20px, 6vw, 96px) 0;
+
+  /* Content and footer stop growing at 1280px and stay centred. */
+  > main,
+  > footer {
+    width: 100%;
+    max-width: 1280px;
+    margin-inline: auto;
+  }
 }
 
 body > footer {

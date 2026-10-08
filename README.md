@@ -1,5 +1,7 @@
 # setexty
 
+<p align="center"><img src="demo.gif" alt="setexty demo: selections merging into one rounded layer" width="640"></p>
+
 Native text selection stacks a separate highlight for every line and element, so you get seams, overlaps and weird corners. setexty paints the whole selection as **one** smooth layer instead, with padding and rounded corners everywhere, even where lines meet. It also covers images, small print, inline code and form fields.
 
 No dependencies, no build step, and your HTML stays the same.

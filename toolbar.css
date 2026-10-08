@@ -178,7 +178,6 @@ body::before {
     font-variant-numeric: tabular-nums;
     white-space: nowrap;
   }
-}
 
   &,
   * {
@@ -191,6 +190,56 @@ body::before {
     &:focus-visible {
       outline: 3px solid #999;
       outline-offset: 3px;
+    }
+  }
+
+  /* Phones: icons + Native, then Fill/Effect, then the three sliders as equal columns
+     (name and value above a full-width bar). */
+  @media (max-width: 640px) {
+    > div {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 6px 12px;
+      padding: 8px 14px 10px;
+
+      > div:nth-child(2),
+      > div:nth-child(3) {
+        grid-column: 1 / -1;
+      }
+
+      /* Native checkbox: top row, right of the icons. */
+      > div:last-child {
+        grid-area: 1 / 2;
+      }
+
+      > div:nth-child(2) {
+        gap: 8px 16px;
+      }
+
+      > div:has([type="range"]) {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 4px 16px;
+
+        label {
+          display: grid;
+          grid-template-columns: 1fr auto;
+          gap: 2px 4px;
+          font-size: 0.8125rem;
+        }
+
+        input[type="range"] {
+          grid-area: 2 / 1 / 3 / -1;
+          width: 100%;
+          top: 0;
+        }
+
+        output {
+          grid-area: 1 / 2;
+          width: auto;
+          text-align: right;
+        }
+      }
     }
   }
 }

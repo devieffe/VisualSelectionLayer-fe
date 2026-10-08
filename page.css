@@ -54,7 +54,7 @@ main {
   gap: clamp(24px, 5vw, 80px);
 
   @media (max-width: 860px) {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   /* Left column: heading, intro, subscribe form, status note. */
@@ -96,18 +96,20 @@ main {
 
     /* One column: the heading scales with the viewport width instead of shrinking to the minimum. */
     @media (max-width: 860px) {
-      font-size: clamp(2.75rem, 11vw, 4.2rem);
+      font-size: clamp(2.1rem, 11vw, 4.2rem);
     }
   }
 
   form {
     display: flex;
+    flex-wrap: wrap;
     gap: 8px;
     max-width: 420px;
     margin-top: 28px;
 
     input {
-      flex: 1;
+      /* Grows first; once the button wraps below, the button fills the row. */
+      flex: 999 1 180px;
       min-width: 0;
       padding: 11px 14px;
       border: 1px solid rgb(0 0 0 / 16%);
@@ -117,6 +119,11 @@ main {
       font: inherit;
       font-size: 0.9375rem;
 
+      /* 16px+ stops iOS zooming in on focus. */
+      @media (max-width: 860px) {
+        font-size: 1rem;
+      }
+
       &:focus {
         border-color: #000;
         outline: 2px solid rgb(0 0 0 / 15%);
@@ -124,6 +131,7 @@ main {
     }
 
     button {
+      flex: 1 0 auto;
       /* Stretches to the input's height; the margin makes it 2px shorter. */
       margin-block: 1px;
       padding: 11px 18px;
@@ -230,6 +238,10 @@ main {
         width: 100%;
         height: auto;
         aspect-ratio: 16 / 7;
+
+        @media (max-width: 600px) {
+          aspect-ratio: 3 / 2;
+        }
         border-radius: 10px;
         object-fit: cover;
         background: #e6e6e6;

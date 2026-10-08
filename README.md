@@ -77,7 +77,3 @@ You can also pass your own `{ show, hide }` animations. More in [`react/README.m
 - `react/`: React components, hooks and GSAP effects.
 
 Browsers: recent Chrome, Edge, Firefox and Safari. In forced-colors (high contrast) mode it steps aside and the native selection comes back.
-
-## License
-
-[MIT](LICENSE) © 2026 Dev Ieffe. Remote demo photos (Unsplash, picsum) keep their own licenses.

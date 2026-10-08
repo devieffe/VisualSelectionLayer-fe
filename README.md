@@ -35,7 +35,7 @@ Want your own look? Copy `setexty.css` too (or just the bits you need) and tweak
 
 All the options are listed at the top of `setexty.js`.
 
-### Handy bits
+### Handy tips
 
 - Add `setexty-ignore` to an element to keep the native selection there.
 - Put `--selection-*` variables on any class to give that area its own look (see `.selection-warm` in `setexty.css`).
@@ -52,19 +52,6 @@ import { Setexty } from "setexty-react";
 
 <Setexty vars={{ color: "#d4f53c", radius: "9px" }} />
 ```
-
-Or without npm:
-
-1. Copy the `react/` folder into your app, e.g. `src/setexty/`.
-2. Drop the component in once, near the root:
-
-   ```jsx
-   import { Setexty } from "./setexty";
-
-   <Setexty vars={{ color: "#d4f53c", radius: "9px" }} />
-   ```
-
-It's safe with server rendering: the engine only loads in the browser.
 
 ### With GSAP
 

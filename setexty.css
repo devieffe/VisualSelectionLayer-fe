@@ -1,0 +1,35 @@
+/* Setexty highlight config · © 2026 Dev Ieffe. All rights reserved. */
+/* EDIT: selection look. Engine variables (all optional; defaults live in setexty.js). */
+:root {
+  --selection-exclude: select;
+  --selection-effect: none;
+  --selection-color: #d4f53c;
+  --selection-pad-x: 5px;
+  --selection-pad-y: 3px;
+  --selection-radius: 9px;
+  --selection-bridge: 14px;
+  --selection-jog: 6px;
+  /* Join nearby pieces (side by side or stacked) whose gap is at most this distance. */
+  --selection-merge: 1px;
+  /* Background layers: any CSS background-image list (url(), gradients) or none. */
+  --selection-image: none;
+  --selection-image-size: cover;
+  --selection-image-position: center;
+  --selection-image-repeat: no-repeat;
+  /* fixed pins images to the viewport instead of the selection box. */
+  --selection-image-attachment: scroll;
+  --selection-opacity: 1;
+  --selection-blend: multiply;
+  /* Shape morph (outline, size, position) and show/hide effect. */
+  --selection-morph-duration: 180ms;
+  --selection-morph-easing: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --selection-effect-duration: 420ms;
+  --selection-effect-easing: cubic-bezier(0.33, 1, 0.68, 1);
+  --selection-effect-out-easing: cubic-bezier(0.5, 0, 0.75, 0);
+  --selection-blur: 14px;
+}
+
+/* EDIT: class-scoped themes. Selections fully inside this element use these values. */
+.selection-warm {
+  --selection-color: #ffd7a6;
+}

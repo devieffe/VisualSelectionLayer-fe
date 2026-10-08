@@ -1,0 +1,196 @@
+/* Preview toolbar · © 2026 Dev Ieffe. All rights reserved. */
+/* Self-contained: styles only .toolbar and the space it reserves above the page. */
+
+/* Push the page below the fixed toolbar; --toolbar-height is measured by toolbar.js. */
+body::before {
+  content: "";
+  flex: none;
+  height: var(--toolbar-height, 64px);
+}
+
+/* Toolbar: .toolbar > div (row) > div (group) > button | label. */
+.toolbar {
+  /* EDIT: toolbar colours. */
+  --toolbar-bg: #fff;
+  --toolbar-fg: #000;
+  --toolbar-field: #fff;
+
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 100;
+  color: var(--toolbar-fg);
+  background: var(--toolbar-bg);
+  user-select: none;
+  -webkit-user-select: none;
+
+  > div {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 10px 30px;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 10px 16px;
+
+    > div {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px 14px;
+
+      &:has(button) {
+        gap: 2px;
+      }
+
+      > .toolbar-clear {
+        margin-left: -5px;
+      }
+
+      &:has([type="range"]) {
+        gap: 8px 4px;
+      }
+    }
+  }
+
+  button {
+    display: inline-grid;
+    place-items: center;
+    width: 36px;
+    min-height: 36px;
+    padding: 0;
+    border: 0;
+    border-radius: 9px;
+    color: var(--toolbar-fg);
+    background: transparent;
+    cursor: pointer;
+  }
+
+  svg {
+    width: 20px;
+    height: 20px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2.75;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.875rem;
+
+    &:has([type="checkbox"]) {
+      gap: 5px;
+      cursor: pointer;
+    }
+  }
+
+  select {
+    min-height: 34px;
+    padding: 0 18px 0 0;
+    border: 0;
+    border-radius: 0;
+    outline: none;
+    color: var(--toolbar-fg);
+    /* Own chevron so the width can follow the chosen option (see fitSelect in toolbar.js). */
+    background: var(--toolbar-field)
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 4.5 6 8l3.5-3.5' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")
+      right center / 12px no-repeat;
+    appearance: none;
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  input {
+    /* EDIT: slider look. Filled bar (black up to the knob, light grey after), no border;
+       white knob with a 2px black border. --fill is set by toolbar.js. */
+    &[type="range"] {
+      --track: 6px;
+      --knob: 16px;
+      position: relative;
+      top: 1px;
+      width: 44px;
+      height: var(--knob);
+      margin: 0;
+      background: transparent;
+      appearance: none;
+      cursor: pointer;
+
+      &::-webkit-slider-runnable-track {
+        height: var(--track);
+        border: 0;
+        border-radius: var(--track);
+        background: linear-gradient(90deg, var(--toolbar-fg) var(--fill, 50%), #ddd var(--fill, 50%));
+      }
+
+      &::-moz-range-track {
+        height: var(--track);
+        border: 0;
+        border-radius: var(--track);
+        background: #ddd;
+      }
+
+      &::-moz-range-progress {
+        height: var(--track);
+        border-radius: var(--track);
+        background: var(--toolbar-fg);
+      }
+
+      &::-webkit-slider-thumb {
+        width: var(--knob);
+        height: var(--knob);
+        margin-top: calc((var(--track) - var(--knob)) / 2);
+        box-sizing: border-box;
+        border: 2px solid var(--toolbar-fg);
+        border-radius: 50%;
+        background: #fff;
+        appearance: none;
+      }
+
+      &::-moz-range-thumb {
+        width: var(--knob);
+        height: var(--knob);
+        box-sizing: border-box;
+        border: 2px solid var(--toolbar-fg);
+        border-radius: 50%;
+        background: #fff;
+      }
+    }
+
+    &[type="checkbox"] {
+      accent-color: var(--toolbar-fg);
+      position: relative;
+      top: 1px;
+      width: 16px;
+      height: 16px;
+    }
+  }
+
+  /* Fixed width that fits "100px", so values 0-100 never shift the toolbar. */
+  output {
+    display: inline-block;
+    width: 5ch;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+}
+
+  &,
+  * {
+    box-sizing: border-box;
+  }
+
+  button,
+  select,
+  input {
+    &:focus-visible {
+      outline: 3px solid #999;
+      outline-offset: 3px;
+    }
+  }
+}

@@ -8,11 +8,7 @@ Native text selection stacks a separate highlight for every line and element, so
 
 No dependencies, no build step, and your HTML stays the same.
 
-## Try it
-
-Open `index.html` in a browser and select stuff. The toolbar at the top lets you play with the fill, effect, merge, radius and padding.
-
-## Install (plain HTML)
+## Install (HTML)
 
 1. Copy `VisualSelectionLayer.js` into your project.
 2. Add it to your page:
@@ -21,9 +17,7 @@ Open `index.html` in a browser and select stuff. The toolbar at the top lets you
    <script src="VisualSelectionLayer.js"></script>
    ```
 
-That's it. It runs automatically on everything inside `<body>`.
-
-Want your own look? Copy `VisualSelectionLayer.css` too (or just the bits you need) and tweak the variables:
+CSS: `VisualSelectionLayer.css`
 
 ```css
 :root {
@@ -35,12 +29,12 @@ Want your own look? Copy `VisualSelectionLayer.css` too (or just the bits you ne
 }
 ```
 
-All the options are listed at the top of `VisualSelectionLayer.js`.
+Vars and options: `VisualSelectionLayer.js`.
 
 ### Handy tips
 
 - Add `visual-selection-layer-ignore` to an element to keep the native selection there.
-- Put `--selection-*` variables on any class to give that area its own look (see `.selection-warm` in `VisualSelectionLayer.css`).
+- Put `--selection-*` variables on any class to give that area its own look.
 - JS API: `VisualSelectionLayer.enable()`, `VisualSelectionLayer.disable()`, `VisualSelectionLayer.refresh()`, and `VisualSelectionLayer.on("show" | "update" | "hide", fn)`.
 
 ## Install (React)
@@ -67,15 +61,6 @@ import { VisualSelectionLayer } from "visual-selection-layer-react"; // or "./Vi
 
 <VisualSelectionLayer gsap={gsap} effect="pop" /> // pop | rise | stretch
 ```
-
-You can also pass your own `{ show, hide }` animations. More in [`react/README.md`](react/README.md) and [`react/App.example.jsx`](react/App.example.jsx).
-
-## What's in here
-
-- `VisualSelectionLayer.js`: the engine. This is the only file you actually need.
-- `VisualSelectionLayer.css`: the selection look (CSS variables).
-- `index.html`, `page.*`, `toolbar.*`: the demo page and its toolbar.
-- `react/`: React components, hooks and GSAP effects (the `visual-selection-layer-react` npm package).
 
 Browsers: recent Chrome, Edge, Firefox and Safari. In forced-colors (high contrast) mode it steps aside and the native selection comes back.
 

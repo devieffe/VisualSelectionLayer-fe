@@ -52,6 +52,11 @@ body::before {
         gap: 8px 4px;
       }
     }
+
+    /* Native checkbox: half the usual group gap after the sliders. */
+    > div:last-child {
+      margin-left: -15px;
+    }
   }
 
   button {
@@ -185,11 +190,26 @@ body::before {
   }
 
   button,
-  select,
   input {
     &:focus-visible {
       outline: 3px solid #999;
       outline-offset: 3px;
+    }
+  }
+
+  /* Dropdowns: no focus ring, no highlighted value, no tap flash. */
+  select {
+    -webkit-tap-highlight-color: transparent;
+
+    &:focus,
+    &:focus-visible {
+      outline: none;
+      box-shadow: none;
+    }
+
+    &:-moz-focusring {
+      color: transparent;
+      text-shadow: 0 0 0 var(--toolbar-fg);
     }
   }
 
@@ -207,9 +227,24 @@ body::before {
         grid-column: 1 / -1;
       }
 
-      /* Native checkbox: top row, right of the icons. */
+      /* Icons: the first glyph lines up with the left edge of Fill/Merge (buttons are 36px, glyphs 20px). */
+      > div:first-child {
+        margin-left: -8px;
+      }
+
+      /* Native checkbox: top row, right of the icons, 1px higher. */
       > div:last-child {
         grid-area: 1 / 2;
+        margin-left: 0;
+
+        input {
+          top: 0;
+        }
+      }
+
+      /* Icons flush with the left edge (the glyphs sit 8px inside their 36px buttons). */
+      > div:first-child {
+        margin-left: -8px;
       }
 
       > div:nth-child(2) {

@@ -925,15 +925,30 @@ ${on(exclude)}::selection, ${on(exclude)} ::selection { color: HighlightText; ba
     const observers = [];
     // While a new selection is being dragged out the shape follows the pointer without morphing;
     // transitions are kept for later changes (keyboard extension, programmatic, variable updates).
+    // Browsers deliver the last selectionchange of a drag asynchronously, sometimes after pointerup,
+    // so the drag counts as ongoing a little longer; otherwise that final step would morph behind the pointer.
+    // On touch screens the selection is adjusted with the browser's own handles, which send no pointer
+    // events to the page, so after a touch every selection change follows the finger without morphing.
     let dragging = false;
-    document.addEventListener("pointerdown", (event) => { dragging = event.button === 0; }, { capture: true, signal });
-    const endDrag = () => { dragging = false; };
+    let dragEndTimer = 0;
+    let touch = false;
+    document.addEventListener("pointerdown", (event) => {
+      clearTimeout(dragEndTimer);
+      touch = event.pointerType !== "mouse";
+      dragging = event.button === 0;
+    }, { capture: true, signal });
+    document.addEventListener("keydown", () => { touch = false; }, { capture: true, signal });
+    const endDrag = () => {
+      clearTimeout(dragEndTimer);
+      dragEndTimer = setTimeout(() => { dragging = false; }, 300);
+    };
+    signal.addEventListener("abort", () => clearTimeout(dragEndTimer));
     window.addEventListener("pointerup", endDrag, { capture: true, signal });
     window.addEventListener("pointercancel", endDrag, { capture: true, signal });
     window.addEventListener("blur", endDrag, { signal });
     // Captured so field selections count too: some engines fire selectionchange only on the field.
     for (const type of ["selectionchange", "select", "input", "focusin", "focusout"]) {
-      document.addEventListener(type, () => scheduleRender(dragging), { capture: true, signal });
+      document.addEventListener(type, () => scheduleRender(dragging || touch), { capture: true, signal });
     }
     window.addEventListener("resize", scheduleInstant, { signal });
     window.addEventListener("scroll", scheduleInstant, { capture: true, passive: true, signal });

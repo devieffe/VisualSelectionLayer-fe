@@ -44,6 +44,17 @@
     },
   };
 
+  // Toolbar switches (select target, fill, effect, sliders, native) apply instantly: morph and effect
+  // durations are zero until the engine has rendered the change, then come back for drags and Replay.
+  const DURATIONS = ["--selection-morph-duration", "--selection-effect-duration"];
+  let restoreTimer = 0;
+  function instantly(change) {
+    DURATIONS.forEach((name) => rootStyle.setProperty(name, "0ms"));
+    change();
+    clearTimeout(restoreTimer);
+    restoreTimer = setTimeout(() => DURATIONS.forEach((name) => rootStyle.removeProperty(name)), 150);
+  }
+
   function applyPreset(group, value) {
     const presets = PRESETS[group];
     const names = new Set(Object.values(presets).flatMap(Object.keys));
@@ -77,9 +88,8 @@
     fitSelect(select);
     select.addEventListener("change", () => {
       fitSelect(select);
-      applyPreset(select.dataset.group, select.value);
+      instantly(() => applyPreset(select.dataset.group, select.value));
       say(`${select.dataset.label}: ${select.selectedOptions[0].textContent}.`);
-      if (select.dataset.group === "effect") replaySelection();
     });
   });
   // Web fonts can load after the first measurement.
@@ -119,7 +129,7 @@
     selection.addRange(range);
     say(button.dataset.status);
   }
-  selectButtons.forEach((button) => button.addEventListener("click", () => selectContents(button)));
+  selectButtons.forEach((button) => button.addEventListener("click", () => instantly(() => selectContents(button))));
 
   $(".toolbar-clear").addEventListener("click", () => {
     window.getSelection()?.removeAllRanges();
@@ -127,8 +137,7 @@
   });
 
   $(".toolbar-native").addEventListener("change", (event) => {
-    if (event.target.checked) window.Setexty?.disable();
-    else window.Setexty?.enable();
+    instantly(() => (event.target.checked ? window.Setexty?.disable() : window.Setexty?.enable()));
     say(event.target.checked
       ? "Native: setexty is fully off (no styles, layer, or listeners); this is the browser's own highlight."
       : "Merged highlight: one padded layer with rounded corners.");
@@ -148,13 +157,15 @@
     range.addEventListener("input", () => {
       paint();
       const value = Number(range.value);
-      rootStyle.setProperty(range.dataset.var, `${value}px`);
+      instantly(() => {
+        rootStyle.setProperty(range.dataset.var, `${value}px`);
+        // Vertical padding follows at ~0.6x so lines keep the default 5px / 3px proportion.
+        if (range.dataset.var === "--selection-pad-x") rootStyle.setProperty("--selection-pad-y", `${Math.round(value * 0.6)}px`);
+      });
       output.textContent = `${value}px`;
       if (range.dataset.var === "--selection-merge") {
         say(`Merge: nearby pieces within ${value}px join into one shape.`);
       } else if (range.dataset.var === "--selection-pad-x") {
-        // Vertical padding follows at ~0.6x so lines keep the default 5px / 3px proportion.
-        rootStyle.setProperty("--selection-pad-y", `${Math.round(value * 0.6)}px`);
         say(`Padding: ${value}px sides, ${Math.round(value * 0.6)}px top and bottom.`);
       } else {
         say(`Radius: every corner rounded to ${value}px.`);

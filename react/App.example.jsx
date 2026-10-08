@@ -1,4 +1,3 @@
-// © 2026 Dev Ieffe. All rights reserved.
 // Usage example: npm i react react-dom gsap, then render <App /> anywhere.
 import gsap from "gsap";
 import { Setexty, SetextyScope } from "./index.js";

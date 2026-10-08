@@ -1,10 +1,14 @@
 # setexty · React + GSAP
 
+```bash
+npm i setexty-react
+```
+
 `setexty.js` is a copy of the engine in the parent folder; keep the two in sync.
 
 ```jsx
 import gsap from "gsap"; // optional
-import { Setexty, SetextyScope } from "./setexty/react";
+import { Setexty, SetextyScope } from "setexty-react"; // or "./setexty/react" if copied
 
 <Setexty vars={{ color: "#d4f53c", radius: "9px" }} />            // CSS effects (--selection-effect)
 <Setexty gsap={gsap} effect="pop" />                              // GSAP: pop | rise | stretch | { show, hide }
@@ -19,3 +23,8 @@ Without React: `setextyGsap(gsap, "rise")` after loading `setexty.js`; it return
 Custom effect: `{ show: (gsap, fill) => tween, hide: (gsap, fill) => tween }`. Return the hide tween: the layer stays until it finishes.
 
 SSR-safe: the engine loads in an effect. Mount `<Setexty />` once per page.
+
+
+## License
+
+[PolyForm Noncommercial 1.0.0](LICENSE.md): free for personal, educational and other noncommercial use. For commercial use, contact [@devieffe](https://github.com/devieffe).

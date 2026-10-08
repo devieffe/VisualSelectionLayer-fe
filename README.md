@@ -43,6 +43,18 @@ All the options are listed at the top of `setexty.js`.
 
 ## Install (React)
 
+```bash
+npm i setexty-react
+```
+
+```jsx
+import { Setexty } from "setexty-react";
+
+<Setexty vars={{ color: "#d4f53c", radius: "9px" }} />
+```
+
+Or without npm:
+
 1. Copy the `react/` folder into your app, e.g. `src/setexty/`.
 2. Drop the component in once, near the root:
 
@@ -62,7 +74,7 @@ npm i gsap
 
 ```jsx
 import gsap from "gsap";
-import { Setexty } from "./setexty";
+import { Setexty } from "setexty-react"; // or "./setexty" if you copied the folder
 
 <Setexty gsap={gsap} effect="pop" /> // pop | rise | stretch
 ```
@@ -74,6 +86,11 @@ You can also pass your own `{ show, hide }` animations. More in [`react/README.m
 - `setexty.js`: the engine. This is the only file you actually need.
 - `setexty.css`: the selection look (CSS variables).
 - `index.html`, `page.*`, `toolbar.*`: the demo page and its toolbar.
-- `react/`: React components, hooks and GSAP effects.
+- `react/`: React components, hooks and GSAP effects (the `setexty-react` npm package).
 
 Browsers: recent Chrome, Edge, Firefox and Safari. In forced-colors (high contrast) mode it steps aside and the native selection comes back.
+
+
+## License
+
+[PolyForm Noncommercial 1.0.0](LICENSE.md): free for personal, educational and other noncommercial use. For commercial use, contact [@devieffe](https://github.com/devieffe).

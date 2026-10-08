@@ -1,5 +1,4 @@
-// © 2026 Dev Ieffe. All rights reserved.
-// GSAP show/hide effects for setexty. Framework-free: works with React (see Setexty.jsx) or plain JS.
+// GSAP show/hide effects for setexty. Framework-free: works with React (see components.js) or plain JS.
 // GSAP is passed in, never imported, so it stays an optional peer dependency.
 //
 //   import gsap from "gsap";

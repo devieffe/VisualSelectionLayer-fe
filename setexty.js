@@ -24,8 +24,6 @@
  *   .on(type, fn) -> off(): "show" | "update" | "hide", fn({ overlay, fill, box, effect }).
  *   A "hide" handler may return a promise or a GSAP tween; the layer stays until it settles, so a
  *   JS animation (e.g. GSAP on `fill`, with --selection-effect: none) can play out. See react/ and codepen/.
- *
- * © 2026 Dev Ieffe. All rights reserved.
  */
 (() => {
   "use strict";

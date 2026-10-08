@@ -1,4 +1,3 @@
-// © 2026 Dev Ieffe. All rights reserved.
 // Preview page. Independent of the toolbar and the engine.
 (() => {
   const status = document.querySelector(".page-status");

@@ -1,0 +1,38 @@
+{
+  "name": "setexty-react",
+  "version": "0.1.0",
+  "description": "React components and hooks for setexty: one smooth, padded, rounded layer for the whole text selection.",
+  "type": "module",
+  "main": "./index.js",
+  "exports": {
+    ".": "./index.js",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "LICENSE.md",
+    "index.js",
+    "components.js",
+    "useSetexty.js",
+    "setexty-gsap.js",
+    "setexty.js"
+  ],
+  "sideEffects": [
+    "./setexty.js"
+  ],
+  "peerDependencies": {
+    "gsap": ">=3",
+    "react": ">=17"
+  },
+  "peerDependenciesMeta": {
+    "gsap": { "optional": true }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/devieffe/setexty-ux.git",
+    "directory": "react"
+  },
+  "homepage": "https://github.com/devieffe/setexty-ux#readme",
+  "keywords": ["react", "selection", "highlight", "text-selection", "gsap", "ui"],
+  "author": "Dev Ieffe",
+  "license": "PolyForm-Noncommercial-1.0.0"
+}

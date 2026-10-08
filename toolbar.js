@@ -1,4 +1,3 @@
-// © 2026 Dev Ieffe. All rights reserved.
 // Preview toolbar. The engine (setexty.js) needs none of this; each control only sets CSS variables.
 // Self-contained: it touches only .toolbar, :root variables and the selection. Status messages go out
 // as a "toolbar:status" event for the page to show; selection targets come from data-select.
@@ -87,9 +86,21 @@
   document.fonts?.ready.then(() => toolbar.querySelectorAll(".toolbar-preset").forEach(fitSelect));
 
   // Reserve the toolbar's height (it changes when the controls wrap); see body::before in toolbar.css.
-  const reserve = () => rootStyle.setProperty("--toolbar-height", `${toolbar.offsetHeight}px`);
+  // Written on the next frame and only on change, so the layout shift it causes never re-enters
+  // ResizeObserver in the same frame ("loop completed with undelivered notifications").
+  let reserved = 0;
+  let reserveFrame = 0;
+  const reserve = () => {
+    reserveFrame = 0;
+    const height = toolbar.offsetHeight;
+    if (height === reserved) return;
+    reserved = height;
+    rootStyle.setProperty("--toolbar-height", `${height}px`);
+  };
   reserve();
-  new ResizeObserver(reserve).observe(toolbar);
+  new ResizeObserver(() => {
+    if (!reserveFrame) reserveFrame = requestAnimationFrame(reserve);
+  }).observe(toolbar);
 
   // Keep the current selection when interacting with the controls.
   toolbar.addEventListener("mousedown", (event) => {

@@ -1,4 +1,3 @@
-// © 2026 Dev Ieffe. All rights reserved.
 // React bindings for setexty. SSR-safe: the engine is loaded in an effect, only in the browser.
 import { useEffect, useRef } from "react";
 import { setextyGsap } from "./setexty-gsap.js";

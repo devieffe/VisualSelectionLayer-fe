@@ -1,4 +1,4 @@
-// © 2026 Dev Ieffe. All rights reserved.
+import { createElement } from "react";
 import { toVar, useSetexty, useSetextyGsap } from "./useSetexty.js";
 
 /**
@@ -20,5 +20,5 @@ export function Setexty({ gsap, effect = "pop", ...options }) {
 export function SetextyScope({ as: Tag = "div", vars, ignore = false, className, style, ...props }) {
   const custom = Object.fromEntries(Object.entries(vars ?? {}).map(([name, value]) => [toVar(name), value]));
   const classes = [ignore ? "setexty-ignore" : "setexty-scope", className].filter(Boolean).join(" ");
-  return <Tag className={classes} style={{ ...custom, ...style }} {...props} />;
+  return createElement(Tag, { className: classes, style: { ...custom, ...style }, ...props });
 }

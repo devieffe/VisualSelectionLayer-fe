@@ -1,4 +1,4 @@
-# Enhanced text selection
+# Enhanced page content selection
 
 <p align="center"><img src="demo.gif" alt="setexty demo: selections merging into one rounded layer" width="480"></p>
 

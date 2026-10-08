@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- Setexty preview -->
+<!-- Visual selection layer preview -->
 <!--
   Photos
   - Background (white architecture): https://unsplash.com/photos/photo-1517816743773-6e0fd518b4a6
@@ -15,12 +15,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Single-layer text selection</title>
     <!-- Plain CSS with native nesting: no build step. Highlight, page and toolbar are independent. -->
-    <link rel="stylesheet" href="setexty.css">
+    <link rel="stylesheet" href="visual-selection-layer.css">
     <link rel="stylesheet" href="page.css">
     <link rel="stylesheet" href="toolbar.css">
   </head>
   <body>
-    <header class="toolbar setexty-ignore" aria-label="Selection controls">
+    <header class="toolbar visual-selection-layer-ignore" aria-label="Selection controls">
       <div>
         <div>
           <button type="button" class="toolbar-select" data-select="main > section" data-status="Preview selected as one merged highlight." aria-label="Select preview" title="Select preview"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="14" rx="2"/><path d="M8 10h8M8 14h5"/></svg></button>
@@ -75,7 +75,7 @@
     <main>
       <div>
         <hgroup>
-          <p>Setexty · selection layer</p>
+          <p>Visual selection layer</p>
           <h1>Smoother content<br>selection component</h1>
         </hgroup>
         <p>
@@ -127,15 +127,15 @@
       </section>
     </main>
     <footer>
-      <span>Setexty · one-layer selection</span>
+      <span>Visual selection layer · one-layer selection</span>
       <span>No dependencies · your HTML stays the same</span>
     </footer>
     <!--
-      Setexty needs no dependencies and no markup changes: the HTML stays the same, just add
-      setexty.js (optionally tune it with --selection-* CSS variables, see setexty.css).
+      Visual selection layer needs no dependencies and no markup changes: the HTML stays the same, just add
+      visual-selection-layer.js (optionally tune it with --selection-* CSS variables, see visual-selection-layer.css).
       toolbar.* and page.* are the preview only and know nothing about each other.
     -->
-    <script src="setexty.js"></script>
+    <script src="visual-selection-layer.js"></script>
     <script src="page.js"></script>
     <script src="toolbar.js"></script>
   </body>

@@ -1,24 +1,24 @@
 import { createElement } from "react";
-import { toVar, useSetexty, useSetextyGsap } from "./useSetexty.js";
+import { toVar, useVisualSelectionLayer, useVisualSelectionLayerGsap } from "./useVisualSelectionLayer.js";
 
 /**
- * Turns the setexty highlight on for the whole page. Renders nothing; mount it once.
- *   <Setexty vars={{ color: "#d4f53c" }} />
- *   <Setexty gsap={gsap} effect="pop" />   // GSAP show/hide instead of the CSS effect
+ * Turns the Visual selection layer highlight on for the whole page. Renders nothing; mount it once.
+ *   <VisualSelectionLayer vars={{ color: "#d4f53c" }} />
+ *   <VisualSelectionLayer gsap={gsap} effect="pop" />   // GSAP show/hide instead of the CSS effect
  */
-export function Setexty({ gsap, effect = "pop", ...options }) {
-  useSetexty(options);
-  useSetextyGsap(gsap, effect);
+export function VisualSelectionLayer({ gsap, effect = "pop", ...options }) {
+  useVisualSelectionLayer(options);
+  useVisualSelectionLayerGsap(gsap, effect);
   return null;
 }
 
 /**
  * Scopes selection styling to its children. `vars` become inline CSS variables
  * ({ color: "red" } -> --selection-color: red); `ignore` keeps the native selection there.
- *   <SetextyScope as="aside" vars={{ color: "#9cf" }}>…</SetextyScope>
+ *   <VisualSelectionLayerScope as="aside" vars={{ color: "#9cf" }}>…</VisualSelectionLayerScope>
  */
-export function SetextyScope({ as: Tag = "div", vars, ignore = false, className, style, ...props }) {
+export function VisualSelectionLayerScope({ as: Tag = "div", vars, ignore = false, className, style, ...props }) {
   const custom = Object.fromEntries(Object.entries(vars ?? {}).map(([name, value]) => [toVar(name), value]));
-  const classes = [ignore ? "setexty-ignore" : "setexty-scope", className].filter(Boolean).join(" ");
+  const classes = [ignore ? "visual-selection-layer-ignore" : "visual-selection-layer-scope", className].filter(Boolean).join(" ");
   return createElement(Tag, { className: classes, style: { ...custom, ...style }, ...props });
 }

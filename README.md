@@ -1,8 +1,8 @@
 # Enhanced page content selection
 
-<p align="center"><img src="demo.gif" alt="setexty demo: selections merging into one rounded layer" width="480"></p>
+<p align="center"><img src="demo.gif" alt="Visual selection layer demo: selections merging into one rounded layer" width="480"></p>
 
-Native text selection stacks a separate highlight for every line and element, so you get seams, overlaps and weird corners. setexty paints the whole selection as **one** smooth layer instead, with padding and rounded corners everywhere, even where lines meet. It also covers images, small print, inline code and form fields.
+Native text selection stacks a separate highlight for every line and element, so you get seams, overlaps and weird corners. Visual selection layer paints the whole selection as **one** smooth layer instead, with padding and rounded corners everywhere, even where lines meet. It also covers images, small print, inline code and form fields.
 
 No dependencies, no build step, and your HTML stays the same.
 
@@ -12,16 +12,16 @@ Open `index.html` in a browser and select stuff. The toolbar at the top lets you
 
 ## Install (plain HTML)
 
-1. Copy `setexty.js` into your project.
+1. Copy `visual-selection-layer.js` into your project.
 2. Add it to your page:
 
    ```html
-   <script src="setexty.js"></script>
+   <script src="visual-selection-layer.js"></script>
    ```
 
 That's it. It runs automatically on everything inside `<body>`.
 
-Want your own look? Copy `setexty.css` too (or just the bits you need) and tweak the variables:
+Want your own look? Copy `visual-selection-layer.css` too (or just the bits you need) and tweak the variables:
 
 ```css
 :root {
@@ -33,24 +33,24 @@ Want your own look? Copy `setexty.css` too (or just the bits you need) and tweak
 }
 ```
 
-All the options are listed at the top of `setexty.js`.
+All the options are listed at the top of `visual-selection-layer.js`.
 
 ### Handy tips
 
-- Add `setexty-ignore` to an element to keep the native selection there.
-- Put `--selection-*` variables on any class to give that area its own look (see `.selection-warm` in `setexty.css`).
-- JS API: `Setexty.enable()`, `Setexty.disable()`, `Setexty.refresh()`, and `Setexty.on("show" | "update" | "hide", fn)`.
+- Add `visual-selection-layer-ignore` to an element to keep the native selection there.
+- Put `--selection-*` variables on any class to give that area its own look (see `.selection-warm` in `visual-selection-layer.css`).
+- JS API: `VisualSelectionLayer.enable()`, `VisualSelectionLayer.disable()`, `VisualSelectionLayer.refresh()`, and `VisualSelectionLayer.on("show" | "update" | "hide", fn)`.
 
 ## Install (React)
 
 ```bash
-npm i setexty-react
+npm i visual-selection-layer-react
 ```
 
 ```jsx
-import { Setexty } from "setexty-react";
+import { VisualSelectionLayer } from "visual-selection-layer-react";
 
-<Setexty vars={{ color: "#d4f53c", radius: "9px" }} />
+<VisualSelectionLayer vars={{ color: "#d4f53c", radius: "9px" }} />
 ```
 
 ### With GSAP
@@ -61,19 +61,19 @@ npm i gsap
 
 ```jsx
 import gsap from "gsap";
-import { Setexty } from "setexty-react"; // or "./setexty" if you copied the folder
+import { VisualSelectionLayer } from "visual-selection-layer-react"; // or "./visual-selection-layer" if you copied the folder
 
-<Setexty gsap={gsap} effect="pop" /> // pop | rise | stretch
+<VisualSelectionLayer gsap={gsap} effect="pop" /> // pop | rise | stretch
 ```
 
 You can also pass your own `{ show, hide }` animations. More in [`react/README.md`](react/README.md) and [`react/App.example.jsx`](react/App.example.jsx).
 
 ## What's in here
 
-- `setexty.js`: the engine. This is the only file you actually need.
-- `setexty.css`: the selection look (CSS variables).
+- `visual-selection-layer.js`: the engine. This is the only file you actually need.
+- `visual-selection-layer.css`: the selection look (CSS variables).
 - `index.html`, `page.*`, `toolbar.*`: the demo page and its toolbar.
-- `react/`: React components, hooks and GSAP effects (the `setexty-react` npm package).
+- `react/`: React components, hooks and GSAP effects (the `visual-selection-layer-react` npm package).
 
 Browsers: recent Chrome, Edge, Firefox and Safari. In forced-colors (high contrast) mode it steps aside and the native selection comes back.
 

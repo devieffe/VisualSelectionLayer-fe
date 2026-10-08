@@ -1,3 +1,3 @@
-export { Setexty, SetextyScope } from "./components.js";
-export { useSetexty, useSetextyGsap, useCssVars, loadSetexty } from "./useSetexty.js";
-export { setextyGsap, GSAP_EFFECTS } from "./setexty-gsap.js";
+export { VisualSelectionLayer, VisualSelectionLayerScope } from "./components.js";
+export { useVisualSelectionLayer, useVisualSelectionLayerGsap, useCssVars, loadVisualSelectionLayer } from "./useVisualSelectionLayer.js";
+export { visualSelectionLayerGsap, GSAP_EFFECTS } from "./visual-selection-layer-gsap.js";

@@ -1,7 +1,7 @@
 /*
- * setexty: single-layer selection highlight.
+ * visual-selection-layer: single-layer selection highlight.
  *
- * Drop-in: load setexty.js with a script tag. It applies to every selectable element in <body>
+ * Drop-in: load visual-selection-layer.js with a script tag. It applies to every selectable element in <body>
  * and is configured only with CSS variables (defaults are injected with zero specificity, so
  * any `:root { ... }` or class rule overrides them):
  *
@@ -19,23 +19,23 @@
  *   --selection-blur, --selection-z-index
  *
  * Variables can be set on any class: the element that contains the whole selection decides the look.
- * Classes: .setexty-scope (opt in), .setexty-ignore (opt out, native highlight), .setexty-overlay (the layer).
- * API: window.Setexty.refresh(), .enable(), .disable() (removes all styles, layer, and listeners), .enabled
+ * Classes: .visual-selection-layer-scope (opt in), .visual-selection-layer-ignore (opt out, native highlight), .visual-selection-layer-overlay (the layer).
+ * API: window.VisualSelectionLayer.refresh(), .enable(), .disable() (removes all styles, layer, and listeners), .enabled
  *   .on(type, fn) -> off(): "show" | "update" | "hide", fn({ overlay, fill, box, effect }).
  *   A "hide" handler may return a promise or a GSAP tween; the layer stays until it settles, so a
  *   JS animation (e.g. GSAP on `fill`, with --selection-effect: none) can play out. See react/ and codepen/.
  */
 (() => {
   "use strict";
-  if (window.Setexty) return;
+  if (window.VisualSelectionLayer) return;
 
   const CLASS = {
-    active: "setexty-active",
-    layer: "setexty-layer",
-    overlay: "setexty-overlay",
-    fill: "setexty-overlay__fill",
-    scope: "setexty-scope",
-    ignore: "setexty-ignore",
+    active: "visual-selection-layer-active",
+    layer: "visual-selection-layer-layer",
+    overlay: "visual-selection-layer-overlay",
+    fill: "visual-selection-layer-overlay__fill",
+    scope: "visual-selection-layer-scope",
+    ignore: "visual-selection-layer-ignore",
     visible: "is-visible",
     instant: "is-instant",
   };
@@ -114,9 +114,9 @@
   pointer-events: none;
 }
 .${CLASS.overlay} {
-  --setexty-morph: var(--selection-morph-duration) var(--selection-morph-easing);
-  --setexty-effect: var(--selection-effect-duration) var(--selection-effect-easing);
-  --setexty-opacity: var(--setexty-effect);
+  --visual-selection-layer-morph: var(--selection-morph-duration) var(--selection-morph-easing);
+  --visual-selection-layer-effect: var(--selection-effect-duration) var(--selection-effect-easing);
+  --visual-selection-layer-opacity: var(--visual-selection-layer-effect);
   position: absolute;
   top: 0;
   left: 0;
@@ -128,9 +128,9 @@
   mix-blend-mode: var(--selection-blend);
   transform-origin: 50% 50%;
   transition:
-    left var(--setexty-morph), top var(--setexty-morph), width var(--setexty-morph), height var(--setexty-morph),
-    opacity var(--setexty-opacity), filter var(--setexty-effect),
-    clip-path var(--setexty-effect), -webkit-clip-path var(--setexty-effect);
+    left var(--visual-selection-layer-morph), top var(--visual-selection-layer-morph), width var(--visual-selection-layer-morph), height var(--visual-selection-layer-morph),
+    opacity var(--visual-selection-layer-opacity), filter var(--visual-selection-layer-effect),
+    clip-path var(--visual-selection-layer-effect), -webkit-clip-path var(--visual-selection-layer-effect);
 }
 .${CLASS.overlay}.${CLASS.visible} { opacity: var(--selection-opacity); }
 /* Set for one synchronous style flush: jumps to the new geometry and hidden state without animating. */
@@ -141,15 +141,15 @@
 }
 /* Hiding fades late, so blur/wipe play out before the layer disappears. */
 .${CLASS.overlay}[data-effect~="fade"]:not(.${CLASS.visible}) {
-  --setexty-opacity: var(--selection-effect-duration) var(--selection-effect-out-easing);
+  --visual-selection-layer-opacity: var(--selection-effect-duration) var(--selection-effect-out-easing);
 }
 .${CLASS.overlay}:not([data-effect~="fade"]):not(.${CLASS.visible}) {
-  --setexty-opacity: var(--selection-effect-duration) steps(1, end);
+  --visual-selection-layer-opacity: var(--selection-effect-duration) steps(1, end);
 }
-.${CLASS.overlay}:not([data-effect~="fade"]).${CLASS.visible} { --setexty-opacity: 0s; }
+.${CLASS.overlay}:not([data-effect~="fade"]).${CLASS.visible} { --visual-selection-layer-opacity: 0s; }
 :is(.${CLASS.overlay}:not(.${CLASS.visible}), .${CLASS.overlay})[data-effect~="none"] {
-  --setexty-effect: 0s;
-  --setexty-opacity: 0s;
+  --visual-selection-layer-effect: 0s;
+  --visual-selection-layer-opacity: 0s;
 }
 .${CLASS.overlay}[data-effect~="blur"]:not(.${CLASS.visible}) { filter: blur(var(--selection-blur)); }
 .${CLASS.overlay}[data-effect~="wipe"] { -webkit-clip-path: inset(-50px); clip-path: inset(-50px); }
@@ -170,10 +170,10 @@
   mask-size: 100% 100%;
   -webkit-mask-repeat: no-repeat;
   mask-repeat: no-repeat;
-  transition: clip-path var(--setexty-morph), -webkit-clip-path var(--setexty-morph);
+  transition: clip-path var(--visual-selection-layer-morph), -webkit-clip-path var(--visual-selection-layer-morph);
 }
 @media (prefers-reduced-motion: reduce) {
-  .${CLASS.overlay} { --setexty-morph: 0s !important; }
+  .${CLASS.overlay} { --visual-selection-layer-morph: 0s !important; }
   .${CLASS.overlay}:not(.${CLASS.visible}) { filter: none !important; }
   .${CLASS.overlay}[data-effect~="wipe"] { -webkit-clip-path: none !important; clip-path: none !important; }
 }
@@ -219,10 +219,10 @@
 
   function injectBase() {
     const base = document.createElement("style");
-    base.dataset.setexty = "base";
+    base.dataset.visualSelectionLayer = "base";
     base.textContent = BASE_CSS;
     rulesStyle = document.createElement("style");
-    rulesStyle.dataset.setexty = "rules";
+    rulesStyle.dataset.visualSelectionLayer = "rules";
     // Prepend so page styles win at equal specificity.
     document.head.prepend(base, rulesStyle);
   }
@@ -258,7 +258,7 @@
     } catch {
       if (!warned.has(value)) {
         warned.add(value);
-        console.warn(`setexty: invalid selector in ${name}: "${value}"; using "${fallback}".`);
+        console.warn(`visual-selection-layer: invalid selector in ${name}: "${value}"; using "${fallback}".`);
       }
       return fallback;
     }
@@ -276,7 +276,7 @@
   }
 
   // Hide the native highlight inside the scope and restore it for excluded elements (select,
-  // .setexty-ignore). ::selection inherits from the parent in modern browsers, so `revert`/`unset` would
+  // .visual-selection-layer-ignore). ::selection inherits from the parent in modern browsers, so `revert`/`unset` would
   // stay transparent; the system Highlight colors are what the browser paints natively.
   // Fields the engine can't measure (email, number, password) are tinted with the selection color.
   function syncRules({ scope, exclude }) {
@@ -975,7 +975,7 @@ ${on(exclude)}::selection, ${on(exclude)} ::selection { color: HighlightText; ba
       frame = 0;
       pendingInstant = false;
       document.documentElement.classList.remove(CLASS.active);
-      document.querySelectorAll("style[data-setexty]").forEach((style) => style.remove());
+      document.querySelectorAll("style[data-visual-selection-layer]").forEach((style) => style.remove());
       layer?.remove();
       layer = overlay = fill = rulesStyle = null;
       rulesKey = "";
@@ -1008,7 +1008,7 @@ ${on(exclude)}::selection, ${on(exclude)} ::selection { color: HighlightText; ba
     sync();
   }
 
-  window.Setexty = {
+  window.VisualSelectionLayer = {
     refresh: () => scheduleRender(),
     enable: () => setEnabled(true),
     disable: () => setEnabled(false),
@@ -1016,7 +1016,7 @@ ${on(exclude)}::selection, ${on(exclude)} ::selection { color: HighlightText; ba
       return isActive();
     },
     on(type, fn) {
-      if (!listeners[type]) throw new TypeError(`setexty: unknown event "${type}"`);
+      if (!listeners[type]) throw new TypeError(`visual-selection-layer: unknown event "${type}"`);
       listeners[type].add(fn);
       return () => listeners[type].delete(fn);
     },

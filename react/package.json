@@ -1,7 +1,7 @@
 {
-  "name": "setexty-react",
+  "name": "visual-selection-layer-react",
   "version": "0.1.0",
-  "description": "React components and hooks for setexty: one smooth, padded, rounded layer for the whole text selection.",
+  "description": "React components and hooks for Visual selection layer: one smooth, padded, rounded layer for the whole text selection.",
   "type": "module",
   "main": "./index.js",
   "exports": {
@@ -12,12 +12,12 @@
     "LICENSE.md",
     "index.js",
     "components.js",
-    "useSetexty.js",
-    "setexty-gsap.js",
-    "setexty.js"
+    "useVisualSelectionLayer.js",
+    "visual-selection-layer-gsap.js",
+    "visual-selection-layer.js"
   ],
   "sideEffects": [
-    "./setexty.js"
+    "./visual-selection-layer.js"
   ],
   "peerDependencies": {
     "gsap": ">=3",

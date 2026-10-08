@@ -1,4 +1,4 @@
-// Preview toolbar. The engine (setexty.js) needs none of this; each control only sets CSS variables.
+// Preview toolbar. The engine (visual-selection-layer.js) needs none of this; each control only sets CSS variables.
 // Self-contained: it touches only .toolbar, :root variables and the selection. Status messages go out
 // as a "toolbar:status" event for the page to show; selection targets come from data-select.
 (() => {
@@ -137,9 +137,9 @@
   });
 
   $(".toolbar-native").addEventListener("change", (event) => {
-    instantly(() => (event.target.checked ? window.Setexty?.disable() : window.Setexty?.enable()));
+    instantly(() => (event.target.checked ? window.VisualSelectionLayer?.disable() : window.VisualSelectionLayer?.enable()));
     say(event.target.checked
-      ? "Native: setexty is fully off (no styles, layer, or listeners); this is the browser's own highlight."
+      ? "Native: Visual selection layer is fully off (no styles, layer, or listeners); this is the browser's own highlight."
       : "Merged highlight: one padded layer with rounded corners.");
   });
 

@@ -1,8 +1,8 @@
-// GSAP show/hide effects for setexty. Framework-free: works with React (see components.js) or plain JS.
+// GSAP show/hide effects for visual-selection-layer. Framework-free: works with React (see components.js) or plain JS.
 // GSAP is passed in, never imported, so it stays an optional peer dependency.
 //
 //   import gsap from "gsap";
-//   const dispose = setextyGsap(gsap, "pop");      // or a custom { show, hide }
+//   const dispose = visualSelectionLayerGsap(gsap, "pop");      // or a custom { show, hide }
 //
 // Each effect animates the overlay's fill element. The engine keeps the layer visible until the
 // tween returned by `hide` completes, and keeps morphing the shape between selections with CSS.
@@ -30,15 +30,15 @@ export const GSAP_EFFECTS = {
 };
 
 /**
- * Plays GSAP effects when the setexty highlight appears and disappears.
+ * Plays GSAP effects when the Visual selection layer highlight appears and disappears.
  * @param gsap    the gsap instance
  * @param effect  preset name (pop | rise | stretch) or { show(gsap, fill), hide(gsap, fill) }
- * @param setexty  the engine API (default: window.Setexty)
+ * @param visualSelectionLayer  the engine API (default: window.VisualSelectionLayer)
  * @returns dispose(): removes the handlers and restores --selection-effect
  */
-export function setextyGsap(gsap, effect = "pop", setexty = window.Setexty) {
+export function visualSelectionLayerGsap(gsap, effect = "pop", visualSelectionLayer = window.VisualSelectionLayer) {
   const fx = typeof effect === "string" ? GSAP_EFFECTS[effect] : effect;
-  if (!gsap || !fx || !setexty) throw new TypeError("setextyGsap: needs gsap, an effect, and window.Setexty");
+  if (!gsap || !fx || !visualSelectionLayer) throw new TypeError("visualSelectionLayerGsap: needs gsap, an effect, and window.VisualSelectionLayer");
   const reduced = window.matchMedia?.("(prefers-reduced-motion: reduce)");
   // CSS show/hide effects would play on top of the tweens, so they are switched off meanwhile.
   const root = document.documentElement.style;
@@ -50,7 +50,7 @@ export function setextyGsap(gsap, effect = "pop", setexty = window.Setexty) {
     if (!reduced?.matches && fx[step]) return fx[step](gsap, fill);
     gsap.set(fill, { clearProps: CLEAR });
   };
-  const offs = [setexty.on("show", play("show")), setexty.on("hide", play("hide"))];
+  const offs = [visualSelectionLayer.on("show", play("show")), visualSelectionLayer.on("hide", play("hide"))];
 
   return () => {
     offs.forEach((off) => off());

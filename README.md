@@ -64,8 +64,7 @@ import { VisualSelectionLayer } from "visual-selection-layer-react"; // or "./Vi
 
 ## Browsers
 
-Recent Chrome, Edge, Firefox and Safari. In forced-colors (high contrast) mode it steps aside and the native selection comes back.
-
+Recent Chrome, Edge, Firefox and Safari. 
 
 ## License
 

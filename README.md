@@ -93,4 +93,4 @@ Browsers: recent Chrome, Edge, Firefox and Safari. In forced-colors (high contra
 
 ## License
 
-[PolyForm Noncommercial 1.0.0](LICENSE.md): free for personal, educational and other noncommercial use. For commercial use, contact [@devieffe](https://github.com/devieffe).
+[PolyForm Noncommercial 1.0.0](LICENSE.md): free for personal, educational and other noncommercial use.

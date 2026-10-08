@@ -78,4 +78,6 @@ You can also pass your own `{ show, hide }` animations. More in [`react/README.m
 
 Browsers: recent Chrome, Edge, Firefox and Safari. In forced-colors (high contrast) mode it steps aside and the native selection comes back.
 
-© 2026 Dev Ieffe. All rights reserved.
+## License
+
+[MIT](LICENSE) © 2026 Dev Ieffe. Remote demo photos (Unsplash, picsum) keep their own licenses.

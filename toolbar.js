@@ -1,4 +1,4 @@
-// Preview toolbar. The engine (visual-selection-layer.js) needs none of this; each control only sets CSS variables.
+// Preview toolbar. The engine (VisualSelectionLayer.js) needs none of this; each control only sets CSS variables.
 // Self-contained: it touches only .toolbar, :root variables and the selection. Status messages go out
 // as a "toolbar:status" event for the page to show; selection targets come from data-select.
 (() => {

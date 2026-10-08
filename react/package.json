@@ -13,11 +13,11 @@
     "index.js",
     "components.js",
     "useVisualSelectionLayer.js",
-    "visual-selection-layer-gsap.js",
-    "visual-selection-layer.js"
+    "VisualSelectionLayerGsap.js",
+    "VisualSelectionLayer.js"
   ],
   "sideEffects": [
-    "./visual-selection-layer.js"
+    "./VisualSelectionLayer.js"
   ],
   "peerDependencies": {
     "gsap": ">=3",

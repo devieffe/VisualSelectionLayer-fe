@@ -1,7 +1,7 @@
 /*
  * visual-selection-layer: single-layer selection highlight.
  *
- * Drop-in: load visual-selection-layer.js with a script tag. It applies to every selectable element in <body>
+ * Drop-in: load VisualSelectionLayer.js with a script tag. It applies to every selectable element in <body>
  * and is configured only with CSS variables (defaults are injected with zero specificity, so
  * any `:root { ... }` or class rule overrides them):
  *

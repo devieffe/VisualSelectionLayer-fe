@@ -1,5 +1,5 @@
 /* Visual selection layer highlight config */
-/* EDIT: selection look. Engine variables (all optional; defaults live in visual-selection-layer.js). */
+/* EDIT: selection look. Engine variables (all optional; defaults live in VisualSelectionLayer.js). */
 :root {
   --selection-exclude: select;
   --selection-effect: none;

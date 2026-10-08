@@ -12,16 +12,16 @@ Open `index.html` in a browser and select stuff. The toolbar at the top lets you
 
 ## Install (plain HTML)
 
-1. Copy `visual-selection-layer.js` into your project.
+1. Copy `VisualSelectionLayer.js` into your project.
 2. Add it to your page:
 
    ```html
-   <script src="visual-selection-layer.js"></script>
+   <script src="VisualSelectionLayer.js"></script>
    ```
 
 That's it. It runs automatically on everything inside `<body>`.
 
-Want your own look? Copy `visual-selection-layer.css` too (or just the bits you need) and tweak the variables:
+Want your own look? Copy `VisualSelectionLayer.css` too (or just the bits you need) and tweak the variables:
 
 ```css
 :root {
@@ -33,12 +33,12 @@ Want your own look? Copy `visual-selection-layer.css` too (or just the bits you 
 }
 ```
 
-All the options are listed at the top of `visual-selection-layer.js`.
+All the options are listed at the top of `VisualSelectionLayer.js`.
 
 ### Handy tips
 
 - Add `visual-selection-layer-ignore` to an element to keep the native selection there.
-- Put `--selection-*` variables on any class to give that area its own look (see `.selection-warm` in `visual-selection-layer.css`).
+- Put `--selection-*` variables on any class to give that area its own look (see `.selection-warm` in `VisualSelectionLayer.css`).
 - JS API: `VisualSelectionLayer.enable()`, `VisualSelectionLayer.disable()`, `VisualSelectionLayer.refresh()`, and `VisualSelectionLayer.on("show" | "update" | "hide", fn)`.
 
 ## Install (React)
@@ -61,7 +61,7 @@ npm i gsap
 
 ```jsx
 import gsap from "gsap";
-import { VisualSelectionLayer } from "visual-selection-layer-react"; // or "./visual-selection-layer" if you copied the folder
+import { VisualSelectionLayer } from "visual-selection-layer-react"; // or "./VisualSelectionLayer" if you copied the folder
 
 <VisualSelectionLayer gsap={gsap} effect="pop" /> // pop | rise | stretch
 ```
@@ -70,8 +70,8 @@ You can also pass your own `{ show, hide }` animations. More in [`react/README.m
 
 ## What's in here
 
-- `visual-selection-layer.js`: the engine. This is the only file you actually need.
-- `visual-selection-layer.css`: the selection look (CSS variables).
+- `VisualSelectionLayer.js`: the engine. This is the only file you actually need.
+- `VisualSelectionLayer.css`: the selection look (CSS variables).
 - `index.html`, `page.*`, `toolbar.*`: the demo page and its toolbar.
 - `react/`: React components, hooks and GSAP effects (the `visual-selection-layer-react` npm package).
 

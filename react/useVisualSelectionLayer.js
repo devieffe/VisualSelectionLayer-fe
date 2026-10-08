@@ -1,10 +1,10 @@
 // React bindings for visual-selection-layer. SSR-safe: the engine is loaded in an effect, only in the browser.
 import { useEffect, useRef } from "react";
-import { visualSelectionLayerGsap } from "./visual-selection-layer-gsap.js";
+import { visualSelectionLayerGsap } from "./VisualSelectionLayerGsap.js";
 
 let engine;
 /** Loads the engine once and resolves with window.VisualSelectionLayer. */
-export const loadVisualSelectionLayer = () => (engine ??= import("./visual-selection-layer.js").then(() => window.VisualSelectionLayer));
+export const loadVisualSelectionLayer = () => (engine ??= import("./VisualSelectionLayer.js").then(() => window.VisualSelectionLayer));
 
 /** "color" -> "--selection-color"; names already starting with "--" are kept. */
 export const toVar = (name) => (name.startsWith("--") ? name : `--selection-${name}`);

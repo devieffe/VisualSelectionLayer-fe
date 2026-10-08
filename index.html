@@ -15,7 +15,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Single-layer text selection</title>
     <!-- Plain CSS with native nesting: no build step. Highlight, page and toolbar are independent. -->
-    <link rel="stylesheet" href="visual-selection-layer.css">
+    <link rel="stylesheet" href="VisualSelectionLayer.css">
     <link rel="stylesheet" href="page.css">
     <link rel="stylesheet" href="toolbar.css">
   </head>
@@ -127,15 +127,15 @@
       </section>
     </main>
     <footer>
-      <span>Visual selection layer · one-layer selection</span>
+      <span>Visual selection layer</span>
       <span>No dependencies · your HTML stays the same</span>
     </footer>
     <!--
       Visual selection layer needs no dependencies and no markup changes: the HTML stays the same, just add
-      visual-selection-layer.js (optionally tune it with --selection-* CSS variables, see visual-selection-layer.css).
+      VisualSelectionLayer.js (optionally tune it with --selection-* CSS variables, see VisualSelectionLayer.css).
       toolbar.* and page.* are the preview only and know nothing about each other.
     -->
-    <script src="visual-selection-layer.js"></script>
+    <script src="VisualSelectionLayer.js"></script>
     <script src="page.js"></script>
     <script src="toolbar.js"></script>
   </body>

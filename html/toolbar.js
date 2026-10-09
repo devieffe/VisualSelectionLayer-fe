@@ -22,12 +22,14 @@
         "--selection-image": "linear-gradient(120deg, #a8edc1, #9fd8f5 55%, #f5c6e6)",
       },
       photo: {
+        "--selection-color": "#eee",
         "--selection-image": 'url("https://picsum.photos/seed/setext-meadow/1200/800")',
         // Pinned to the viewport (100% x 100vh), so the photo keeps its size whatever is selected.
         "--selection-image-attachment": "fixed",
         "--selection-opacity": "0.55",
       },
       layered: {
+        "--selection-color": "#eee",
         "--selection-image":
           'url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2712%27 height=%2712%27%3E%3Ccircle cx=%272%27 cy=%272%27 r=%271.4%27 fill=%27%2310281b%27 fill-opacity=%270.35%27/%3E%3C/svg%3E"), url("https://picsum.photos/seed/setext-dunes/1200/800")',
         "--selection-image-size": "12px 12px, cover",

@@ -177,6 +177,7 @@
     -webkit-transition: none !important;
     transition: none !important;
   }
+  .${CLASS.overlay}.${CLASS.instant} .${CLASS.fill}::before { transition: none !important; }
   /* Hiding fades late, so blur/wipe play out before the layer disappears. */
   :is(.${CLASS.overlay}, .${CLASS.tints})[data-effect~="fade"]:not(.${CLASS.visible}) {
     --visual-selection-layer-opacity: var(--selection-effect-duration) var(--selection-effect-out-easing);
@@ -229,6 +230,21 @@
     /* background-position moves opposite to the overlay with the same timing, so a page-anchored image stays put. */
     transition: clip-path var(--visual-selection-layer-morph), -webkit-clip-path var(--visual-selection-layer-morph),
       background-position var(--visual-selection-layer-morph);
+  }
+  /* A viewport-sized surface avoids mobile fixed-background quirks and page-anchor offsets. */
+  .${CLASS.fill}[data-image-fixed] { background-image: none; }
+  .${CLASS.fill}[data-image-fixed]::before {
+    content: "";
+    position: absolute;
+    left: var(--visual-selection-layer-viewport-x);
+    top: var(--visual-selection-layer-viewport-y);
+    width: var(--visual-selection-layer-viewport-width);
+    height: var(--visual-selection-layer-viewport-height);
+    background-image: var(--selection-image);
+    background-size: var(--selection-image-size);
+    background-position: var(--selection-image-position);
+    background-repeat: var(--selection-image-repeat);
+    transition: left var(--visual-selection-layer-morph), top var(--visual-selection-layer-morph);
   }
   @media (prefers-reduced-motion: reduce) {
     .${CLASS.overlay} { --visual-selection-layer-morph: 0s !important; }
@@ -1305,7 +1321,15 @@
       if (anchor === "auto") {
         anchor = sourceStyle.getPropertyValue("--selection-image-repeat").trim() === "no-repeat" ? "selection" : "page";
       }
-      if (anchor === "page") fill.style.backgroundPosition = `${-x}px ${-y}px`;
+      const fixedImage = sourceStyle.getPropertyValue("--selection-image-attachment").trim() === "fixed";
+      fill.toggleAttribute("data-image-fixed", fixedImage);
+      if (fixedImage) {
+        fill.style.setProperty("--visual-selection-layer-viewport-x", `${-left}px`);
+        fill.style.setProperty("--visual-selection-layer-viewport-y", `${-top}px`);
+        fill.style.setProperty("--visual-selection-layer-viewport-width", `${window.innerWidth}px`);
+        fill.style.setProperty("--visual-selection-layer-viewport-height", `${window.innerHeight}px`);
+      }
+      if (anchor === "page" && !fixedImage) fill.style.backgroundPosition = `${-x}px ${-y}px`;
       else fill.style.removeProperty("background-position");
       setShape(d, Math.round(width * 100) / 100, Math.round(height * 100) / 100);
       renderTints(pieces, sourceStyle, origin);

@@ -1,0 +1,47 @@
+{
+  "name": "vsl",
+  "version": "0.1.0",
+  "description": "Visual layer for page selection: one smooth, padded, rounded layer for the whole text selection. Plain JS + CSS, with optional React bindings.",
+  "type": "module",
+  "main": "./VisualSelectionLayer.js",
+  "unpkg": "./VisualSelectionLayer.js",
+  "jsdelivr": "./VisualSelectionLayer.js",
+  "style": "./VisualSelectionLayer.css",
+  "exports": {
+    ".": "./VisualSelectionLayer.js",
+    "./VisualSelectionLayer.js": "./VisualSelectionLayer.js",
+    "./VisualSelectionLayer.css": "./VisualSelectionLayer.css",
+    "./react": "./react/VisualSelectionLayer.js",
+    "./react/VisualSelectionLayer": "./react/VisualSelectionLayer.js",
+    "./react/VisualSelectionLayerGsap": "./react/VisualSelectionLayerGsap.js",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "VisualSelectionLayer.js",
+    "VisualSelectionLayer.css",
+    "react/",
+    "LICENSE.md",
+    "README.md"
+  ],
+  "sideEffects": [
+    "./VisualSelectionLayer.js",
+    "./VisualSelectionLayer.css"
+  ],
+  "peerDependencies": {
+    "gsap": ">=3",
+    "react": ">=17"
+  },
+  "peerDependenciesMeta": {
+    "gsap": { "optional": true },
+    "react": { "optional": true }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/devieffe/vsl.git",
+    "directory": "dist"
+  },
+  "homepage": "https://devieffe.github.io/vsl/",
+  "keywords": ["selection", "highlight", "text-selection", "react", "gsap", "ui"],
+  "author": "Dev Ieffe",
+  "license": "PolyForm-Noncommercial-1.0.0"
+}

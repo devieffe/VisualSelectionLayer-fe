@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
@@ -12,7 +12,7 @@
     <meta name="theme-color" content="#ffffff">
     <meta name="color-scheme" content="light">
     <link rel="canonical" href="https://devieffe.github.io/vsl/">
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%23ff2d87'/%3E%3Cpath d='M9 11h14M9 16h10M9 21h12' stroke='%23fff3f8' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2032%2032'%3E%3Crect%20width='32'%20height='32'%20rx='9'%20fill='%23ff2d87'/%3E%3Cpath%20d='M9%2011h14M9%2016h10M9%2021h12'%20stroke='%23fff3f8'%20stroke-width='3'%20stroke-linecap='round'/%3E%3C/svg%3E">
     <link rel="license" href="https://github.com/devieffe/vsl/blob/main/LICENSE.md">
 
     <meta property="og:type" content="website">
@@ -21,18 +21,18 @@
     <meta property="og:url" content="https://devieffe.github.io/vsl/">
     <meta property="og:title" content="VisualSelectionLayer | one smooth layer for page selection">
     <meta property="og:description" content="One smooth selection layer with padding and rounded corners. No dependencies, your HTML stays the same.">
-    <meta property="og:image" content="https://devieffe.github.io/vsl/demo.gif">
-    <meta property="og:image:secure_url" content="https://devieffe.github.io/vsl/demo.gif">
+    <meta property="og:image" content="https://devieffe.github.io/vsl/demo-ml.gif">
+    <meta property="og:image:secure_url" content="https://devieffe.github.io/vsl/demo-ml.gif">
     <meta property="og:image:type" content="image/gif">
-    <meta property="og:image:width" content="640">
-    <meta property="og:image:height" content="422">
+    <meta property="og:image:width" content="800">
+    <meta property="og:image:height" content="528">
     <meta property="og:image:alt" content="Selections across text, photos and small print merging into one rounded layer">
 
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:url" content="https://devieffe.github.io/vsl/">
     <meta name="twitter:title" content="VisualSelectionLayer | one smooth layer for page selection">
     <meta name="twitter:description" content="One smooth selection layer with padding and rounded corners. No dependencies, your HTML stays the same.">
-    <meta name="twitter:image" content="https://devieffe.github.io/vsl/demo.gif">
+    <meta name="twitter:image" content="https://devieffe.github.io/vsl/demo-ml.gif">
     <meta name="twitter:image:alt" content="Selections across text, photos and small print merging into one rounded layer">
 
     <script type="application/ld+json">
@@ -57,9 +57,9 @@
             "about": { "@id": "https://devieffe.github.io/vsl/#software" },
             "primaryImageOfPage": {
               "@type": "ImageObject",
-              "url": "https://devieffe.github.io/vsl/demo.gif",
-              "width": 640,
-              "height": 422
+              "url": "https://devieffe.github.io/vsl/demo-ml.gif",
+              "width": 800,
+              "height": 528
             }
           },
           {
@@ -73,7 +73,7 @@
             "runtimePlatform": "Web browser",
             "keywords": "text selection, ::selection, highlight, React",
             "license": "https://polyformproject.org/licenses/noncommercial/1.0.0",
-            "image": "https://devieffe.github.io/vsl/demo.gif",
+            "image": "https://devieffe.github.io/vsl/demo-ml.gif",
             "author": { "@id": "https://devieffe.github.io/vsl/#person" },
             "copyrightHolder": { "@id": "https://devieffe.github.io/vsl/#person" },
             "copyrightYear": 2026
@@ -90,118 +90,14 @@
     </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Montserrat:wght@800;900&display=swap">
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <style type="text/tailwindcss">
-      @theme {
-        --breakpoint-*: initial;
-        --breakpoint-sm: 561px;
-        --breakpoint-md: 901px;
-        --font-display: "Montserrat", system-ui, sans-serif;
-        --font-body: "Lato", system-ui, sans-serif;
-        --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
-        --color-ink: #000;
-        --color-nav: #1c1c1c;
-        --color-muted: #707070;
-        --color-code: #f5f5f5;
-        /* Everything is at full size from 1440px and scales down linearly to 375px. */
-        --spacing: calc(2.4px + 1.6 * var(--k));
-        --text-body: calc(18px + 6 * var(--k));
-        --text-bar: 20px;
-        --text-h1: calc(40px + 34 * var(--k));
-        --text-hero: calc(22px + 12 * var(--k));
-        --text-h2: calc(32px + 20 * var(--k));
-        --text-h3: calc(22px + 8 * var(--k));
-        --text-lead: calc(20px + 8 * var(--k));
-        --text-btn: min(calc(18px + 9 * var(--k)), (100vw - 40px) / 19.5);
-        --text-col: calc(15px + 9 * var(--k));
-        --text-note: 18px;
-        --text-mono: calc(14px + 4 * var(--k));
-      }
-
-      /* Unlayered so it beats the engine defaults in :where(:root).
-         The layer sits behind the content, so selected text shows in its own colour on the pink fill. */
-      :root {
-        --k: clamp(0px, (100vw - 375px) / 1065, 1px);
-        --selection-color: #ff4f9a99;
-        --selection-exclude: select, .copy;
-        --selection-text-color: #fff3f8;
-        --selection-blend: normal;
-        --selection-z-index: -1;
-        --selection-radius: 18px;
-        --selection-pad-x: 12px;
-        --selection-pad-y: 7px;
-        --selection-merge: 56px;
-        --selection-effect: fade;
-        --selection-image-anchor: selection;
-      }
-
-      @layer base {
-        html { scroll-behavior: smooth; }
-        @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
-        :focus-visible { @apply outline-3 outline-offset-4 outline-ink; }
-        [id] { scroll-margin-top: calc(var(--bar-h) + 1rem); }
-        :root { --bar-h: 76px; @variant sm { --bar-h: 60px; } }
-        body { @apply bg-white font-body text-body/[1.65] text-ink antialiased; }
-        h1, h2, h3 { @apply font-display; }
-        h2 { @apply text-h2/[1.08] font-extrabold; }
-        h3 { @apply text-h3/[1.25] font-extrabold; }
-        pre { @apply overflow-x-auto py-4.5 px-5 text-mono/[1.6]; }
-      }
-
-      @utility wrap {
-        width: min(1440px, 100% - 2 * (20px + 36 * var(--k)));
-        margin-inline: auto;
-      }
-
-      @utility note {
-        @apply text-note/[1.5] text-muted;
-      }
-
-      /* Paints a background below the selection layer, which sits at z-index -1. */
-      @utility bg-under-* {
-        position: relative;
-        &::before { content: ""; position: absolute; inset: 0; z-index: -2; border-radius: inherit; background: --value(--color-*); }
-      }
-
-      @layer components {
-        .btn { @apply inline-flex items-center gap-[0.45em] rounded-2xl border-2 border-transparent px-[1.04em] py-[0.6em] text-btn/none font-bold; }
-        .btn svg { @apply size-[1.1em] shrink-0; }
-        .lead { @apply mt-19.5 max-w-[1100px] text-lead/[1.4]; }
-        .code { --copy-size: calc(var(--spacing) * 9 + var(--text-mono) * 1.6); @apply grid mb-5 rounded-xl bg-under-code; }
-        .code pre {
-          min-width: 0;
-          font-size: calc(var(--text-mono) * 0.9);
-          -webkit-mask: linear-gradient(#000 0 0), linear-gradient(#000 0 0);
-          -webkit-mask-size: 100% 100%, var(--copy-size) var(--copy-size);
-          -webkit-mask-position: 0 0, right 0 top 0;
-          -webkit-mask-repeat: no-repeat;
-          -webkit-mask-composite: source-out;
-          mask: linear-gradient(#000 0 0), linear-gradient(#000 0 0);
-          mask-size: 100% 100%, var(--copy-size) var(--copy-size);
-          mask-position: 0 0, right 0 top 0;
-          mask-repeat: no-repeat;
-          mask-composite: subtract;
-        }
-        .code + .code pre {
-          min-height: calc(var(--spacing) * 9 + var(--text-mono) * 8);
-          --copy-mask-height: calc((var(--copy-size) + 26px) / 2);
-          -webkit-mask-size: 100% 100%, var(--copy-size) var(--copy-mask-height);
-          mask-size: 100% 100%, var(--copy-size) var(--copy-mask-height);
-        }
-        .copy { @apply absolute grid size-[22px] p-0 m-0 border-0 bg-transparent text-muted select-none cursor-pointer; top: calc((var(--copy-size) - 22px) / 2); right: calc((var(--copy-size) - 22px) / 2); }
-        .copy, .copy * { user-select: none; -webkit-user-select: none; }
-        .copy svg { @apply size-[22px]; }
-        .copy .done, .copy.is-copied .idle { @apply hidden; }
-        .copy.is-copied .done { @apply block text-ink; }
-      }
-    </style>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono&family=Lato:wght@400;700&family=Montserrat:wght@800;900&display=swap">
+    <link rel="stylesheet" href="style.css">
   </head>
   <body class="pt-(--bar-h)">
     <a class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-30 focus:rounded-xl focus:bg-ink focus:px-5 focus:py-3 focus:font-bold focus:text-white" href="#main">Skip to content</a>
-    <header class="group fixed inset-x-0 top-0 z-20 flex flex-wrap items-center justify-between gap-x-8.5 bg-white px-[calc(20px+36*var(--k))] py-[14px] text-bar/[1.2] text-nav sm:py-[18px] md:pr-11 md:pl-7">
-      <a class="font-bold" href="#main" aria-label="VisualSelectionLayer, home">VisualSelectionLayer</a>
-      <button class="-mr-2 grid size-[48px] translate-y-[3px] cursor-pointer place-items-center sm:hidden" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="menu" id="menu-toggle">
+    <header class="group fixed inset-x-0 top-0 z-20 flex flex-wrap items-center justify-between gap-x-8.5 bg-white px-[var(--content-gutter)] py-[14px] text-bar/[1.2] text-nav sm:py-[18px]">
+      <a class="font-bold max-[1279px]:ml-1" href="#main" aria-label="VisualSelectionLayer, home">VisualSelectionLayer</a>
+      <button class="-mr-[9px] grid size-[48px] translate-y-[3px] cursor-pointer place-items-center sm:hidden" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="menu" id="menu-toggle">
         <svg class="size-[30px] group-data-open:hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
         <svg class="hidden size-[30px] group-data-open:block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
       </button>
@@ -217,19 +113,19 @@
     </header>
 
     <main id="main" tabindex="-1" class="mx-auto max-w-[1440px] outline-none">
-      <section aria-labelledby="hero-title" class="wrap grid grid-cols-1 items-center gap-x-18 pt-26 pb-18 md:grid-cols-2">
-        <div class="contents md:block">
+      <section aria-labelledby="hero-title" class="wrap grid grid-cols-1 items-center gap-x-18 pt-26 pb-18 text-center max-[720px]:pt-16 max-[720px]:text-left min-[1025px]:grid-cols-2 min-[1025px]:text-left">
+        <div class="contents min-[1025px]:block">
           <h1 id="hero-title" class="text-h1/[1.08] font-black tracking-[-0.01em]">Make every selection <span class="hidden min-[1120px]:inline">look</span><span class="min-[1120px]:hidden">visually</span> designed</h1>
-          <p class="order-2 mt-20 text-hero/[1.5] md:order-none md:mt-12">VisualSelectionLayer turns the browser’s patchy highlight into a smooth, padded, soft layer. Single script, zero dependencies.</p>
-          <div class="order-2 mt-15 flex gap-[0.9em] text-btn *:whitespace-nowrap md:order-none">
+          <p class="order-2 mt-20 text-hero/[1.5] max-[720px]:mt-10 min-[1025px]:order-none min-[1025px]:mt-12">Turn the browser’s patchy highlight into a smooth, padded, soft layer. Single script, easy install, zero dependencies.</p>
+          <div class="order-2 mt-15 flex justify-center gap-[0.9em] text-btn *:whitespace-nowrap min-[1025px]:order-none min-[1025px]:justify-start">
             <a class="btn bg-under-ink px-[1.5em] text-white" href="#try">Try it free</a>
             <a class="btn" href="https://github.com/devieffe/vsl" rel="noopener"><svg viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>See on GitHub</a>
           </div>
         </div>
-        <figure class="order-1 mt-16 self-start md:order-none md:mt-6 min-[760px]:max-[900px]:mx-auto min-[760px]:max-[900px]:w-[90%]">
+        <figure class="order-1 mx-auto mt-16 w-full self-start min-[1025px]:order-none min-[1025px]:mt-6 min-[721px]:max-[1024px]:w-[90%]">
           <picture>
             <source srcset="demo-still.png" media="(prefers-reduced-motion: reduce)">
-            <img class="w-full rounded-[18px]" src="demo.gif" alt="Selections across text, photos and small print merging into one rounded layer" width="640" height="422" fetchpriority="high">
+            <img class="w-full rounded-[18px]" src="demo-ml.gif" alt="Selections across text, photos and small print merging into one rounded layer" width="800" height="528" fetchpriority="high">
           </picture>
           <figcaption class="note mt-3.5 text-center">Select anything on this page, it runs here too.</figcaption>
         </figure>
@@ -254,8 +150,8 @@
           </div>
           <div>
             <h3>Fully CSS customizable</h3>
-            <p>Design the selection’s color, padding, radius, image fill and effects with CSS variables, or override the layer styles directly. Add one script or React component; no dependencies.</p>
-            <ul class="flex flex-wrap gap-x-5.5 gap-y-1.5 text-muted" aria-label="Tags"><li>vanilla JS</li><li>React</li><li>zero deps</li></ul>
+            <p>Design the selection’s color, padding, radius, image fill and effects with CSS variables, or override the layer styles directly.</p>
+            <ul class="flex flex-wrap gap-x-5.5 gap-y-1.5 text-muted" aria-label="Tags"><li>JS</li><li>React</li><li><span class="plex-mono">0</span> deps</li></ul>
           </div>
         </div>
       </section>
@@ -263,7 +159,11 @@
       <section class="wrap mt-20 py-16" id="try" aria-labelledby="try-title">
         <h2 id="try-title">Try it</h2>
         <p class="lead">Explore the preview. Try different colors, effects, merge settings, radius, and padding.</p>
-        <div class="visual-selection-layer-ignore mt-26 select-none [&_.codepen]:h-[min(760px,85vh)] [&_iframe]:h-[min(760px,85vh)] [&_iframe]:w-full">
+        <div class="codepen-frame visual-selection-layer-ignore mt-26 select-none" id="codepen-frame">
+          <div class="codepen-consent" id="codepen-consent">
+            <p>The live preview is hosted on CodePen and uses cookies.</p>
+            <button type="button" id="codepen-consent-accept">Accept</button>
+          </div>
           <p class="codepen" data-height="760" data-default-tab="result" data-slug-hash="01a11b28-e88b-74b9-b587-37fc0b64fb94" data-pen-title="VisualSelectionLayer" data-user="devieffe">
             <span>See the Pen <a href="https://codepen.io/devieffe/pen/01a11b28-e88b-74b9-b587-37fc0b64fb94">VisualSelectionLayer</a> by Dev Ieffe on <a href="https://codepen.io">CodePen</a>.</span>
           </p>
@@ -272,11 +172,11 @@
 
       <section class="wrap mt-20 py-16" id="install" aria-labelledby="install-title">
         <h2 id="install-title">Install</h2>
-        <div class="mt-24 flex flex-col gap-24 md:flex-row md:gap-12 [&>div]:min-w-0 [&>div]:flex-1 [&_h3]:mb-6 [&_p]:note [&_p]:wrap-break-word">
+        <div class="mt-24 flex flex-col gap-20 min-[721px]:flex-row min-[721px]:gap-12 [&>div]:min-w-0 [&>div]:flex-1 [&_h3]:mb-6 [&_p]:note [&_p]:wrap-break-word">
           <div>
             <h3>HTML</h3>
             <div class="code"><pre tabindex="0"><code>&lt;script src="VisualSelectionLayer.js"&gt;&lt;/script&gt;</code></pre><button class="copy" type="button" aria-label="Copy code"><svg class="idle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1"/></svg><svg class="done" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button></div>
-            <div class="code"><pre tabindex="0"><code>:root {
+            <div class="code mb-2"><pre tabindex="0"><code>:root {
   --selection-color: #d4f53c;
   --selection-radius: 9px;
   --selection-effect: fade;
@@ -286,7 +186,7 @@
           <div>
             <h3>React</h3>
             <div class="code"><pre tabindex="0"><code>npm i react</code></pre><button class="copy" type="button" aria-label="Copy code"><svg class="idle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1"/></svg><svg class="done" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button></div>
-            <div class="code"><pre tabindex="0"><code>import VisualSelectionLayer
+            <div class="code mb-2"><pre tabindex="0"><code>import VisualSelectionLayer
   from "./VisualSelectionLayer.js";
 
 &lt;VisualSelectionLayer vars={{ color: "#d4f53c" }} /&gt;</code></pre><button class="copy" type="button" aria-label="Copy code"><svg class="idle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1"/></svg><svg class="done" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button></div>
@@ -298,12 +198,86 @@
 
     <footer class="wrap mt-40 flex flex-wrap justify-between gap-3 pt-9 pb-12 text-note/[1.5]">
       <p><span id="year" class="mr-2">2026</span><span class="font-bold text-ink">Dev Ieffe</span></p>
-      <p>Recent Chrome, Edge, Firefox and Safari</p>
+      <p>Recent Chrome, Edge, Safari <span class="system-font">&amp;</span> more</p>
     </footer>
+    <aside class="cookie-notice" id="cookie-notice" aria-label="Cookie notice" hidden>
+      <p>This site uses cookies and third-party embeds for site features and preview content.</p>
+      <div class="cookie-notice-actions">
+        <button type="button" id="cookie-notice-accept">Accept</button>
+        <button type="button" id="cookie-notice-decline">Decline</button>
+      </div>
+    </aside>
     <p class="sr-only" id="status" role="status" aria-live="polite"></p>
 
     <script>
       document.getElementById("year").textContent = new Date().getFullYear();
+
+      const cookieNotice = document.getElementById("cookie-notice");
+      const cookieChoiceKey = "vsl-cookie-choice";
+      let cookieChoice = null;
+      try {
+        cookieChoice = localStorage.getItem(cookieChoiceKey);
+      } catch (error) {
+        console.error("Could not read the cookie choice.", error);
+      }
+      cookieNotice.hidden = cookieChoice === "alright" || cookieChoice === "decline";
+
+      const loadScript = (src, account) => {
+        const script = document.createElement("script");
+        script.src = src;
+        script.async = true;
+        if (account) script.dataset.account = account;
+        script.addEventListener("error", () => console.error(`Could not load third-party script: ${src}`));
+        document.body.append(script);
+        return script;
+      };
+
+      const codepenHost = document.getElementById("codepen-frame");
+      const codepenFallback = codepenHost.querySelector(".codepen").outerHTML;
+      let codepenScript = null;
+      const loadCodepen = () => {
+        codepenHost.removeAttribute("data-declined");
+        if (codepenScript) return;
+        if (!codepenHost.querySelector(".codepen")) codepenHost.insertAdjacentHTML("beforeend", codepenFallback);
+        codepenScript = loadScript("https://public.codepenassets.com/embed/index.js");
+      };
+      const unloadCodepen = () => {
+        codepenScript?.remove();
+        codepenScript = null;
+        codepenHost.querySelectorAll(":scope > :not(.codepen-consent)").forEach((node) => node.remove());
+        codepenHost.insertAdjacentHTML("beforeend", codepenFallback);
+        codepenHost.setAttribute("data-declined", "");
+      };
+      if (cookieChoice === "decline") codepenHost.setAttribute("data-declined", "");
+      else loadCodepen();
+
+      let userwayLoaded = false;
+      const loadUserway = () => {
+        if (userwayLoaded) return;
+        userwayLoaded = true;
+        loadScript("https://cdn.userway.org/widget.js", "VI8yldchCb");
+      };
+      if (cookieChoice === "alright") loadUserway();
+
+      const saveCookieChoice = (choice) => {
+        try {
+          localStorage.setItem(cookieChoiceKey, choice);
+        } catch (error) {
+          console.error("Could not save the cookie choice.", error);
+        }
+        cookieNotice.classList.add("is-leaving");
+        setTimeout(() => {
+          cookieNotice.hidden = true;
+          cookieNotice.classList.remove("is-leaving");
+        }, matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 300);
+        if (choice === "alright") {
+          loadUserway();
+          loadCodepen();
+        } else unloadCodepen();
+      };
+      document.getElementById("codepen-consent-accept").addEventListener("click", () => saveCookieChoice("alright"));
+      document.getElementById("cookie-notice-accept").addEventListener("click", () => saveCookieChoice("alright"));
+      document.getElementById("cookie-notice-decline").addEventListener("click", () => saveCookieChoice("decline"));
 
       const header = document.querySelector("header");
       const toggle = document.getElementById("menu-toggle");
@@ -348,6 +322,5 @@
       });
     </script>
     <script src="html/VisualSelectionLayer.js"></script>
-    <script async src="https://public.codepenassets.com/embed/index.js"></script>
   </body>
 </html>

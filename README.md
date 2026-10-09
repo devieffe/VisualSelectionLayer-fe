@@ -10,14 +10,14 @@ No dependencies, no build step, and your HTML stays the same.
 
 ## Install (HTML)
 
-1. Copy `VisualSelectionLayer.js` into your project.
+1. Copy `html/VisualSelectionLayer.js` into your project.
 2. Add it to your page:
 
    ```html
    <script src="VisualSelectionLayer.js"></script>
    ```
 
-CSS: `VisualSelectionLayer.css`
+CSS: `html/VisualSelectionLayer.css`
 
 ```css
 :root {
@@ -29,7 +29,7 @@ CSS: `VisualSelectionLayer.css`
 }
 ```
 
-Vars and options: `VisualSelectionLayer.js`.
+Vars and options: `html/VisualSelectionLayer.js`.
 
 ### Handy tips
 

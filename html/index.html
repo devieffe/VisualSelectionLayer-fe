@@ -1,0 +1,142 @@
+<!doctype html>
+<!-- Visual selection layer preview -->
+<!--
+  Photos
+  - Background (white architecture): https://unsplash.com/photos/photo-1517816743773-6e0fd518b4a6
+  - Blue tennis court (figure + inline image): local tennisbg.jpg
+  Remote photos via Unsplash (free to use under the Unsplash License, https://unsplash.com/license);
+  credit belongs to the photographers named on each page. The list thumbnails and the
+  Photo / Ptrn + photo selection fills use placeholder images from https://picsum.photos.
+  Replace any of them by editing the URLs below (EDIT: photos), in page.css and in toolbar.js PRESETS.
+-->
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Single-layer text selection</title>
+    <!-- Plain CSS with native nesting: no build step. Highlight, page and toolbar are independent. -->
+    <link rel="stylesheet" href="VisualSelectionLayer.css">
+    <link rel="stylesheet" href="page.css">
+    <link rel="stylesheet" href="toolbar.css">
+  </head>
+  <body>
+    <header class="toolbar visual-selection-layer-ignore" aria-label="Selection controls">
+      <div>
+        <div>
+          <button type="button" class="toolbar-select" data-select="main > section" data-status="Preview selected as one merged highlight." aria-label="Select preview" title="Select preview"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="14" rx="2"/><path d="M8 10h8M8 14h5"/></svg></button>
+          <button type="button" class="toolbar-select-all" data-select="main" data-status="Whole page selected as one merged layer." aria-label="Select page" title="Select page"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3"/><path d="M9 10h6M9 14h6"/></svg></button>
+          <button type="button" class="toolbar-replay" aria-label="Replay effect" title="Replay effect"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.4-5.7"/><path d="M4 4v4.5h4.5"/></svg></button>
+          <button type="button" class="toolbar-clear" aria-label="Clear selection" title="Clear selection"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+        </div>
+        <div>
+          <label>
+            Fill:
+            <select class="toolbar-preset" data-group="fill" data-label="Fill">
+              <option value="lime">Lime</option>
+              <option value="grey">Light</option>
+              <option value="inverse">Blue</option>
+              <option value="gradient">Gradient</option>
+              <option value="photo">Photo URL</option>
+              <option value="layered">Ptrn + photo</option>
+            </select>
+          </label>
+          <label>
+            Effect:
+            <select class="toolbar-preset" data-group="effect" data-label="Effect">
+              <option value="none">None</option>
+              <option value="fade">Fade</option>
+              <option value="blur">Blur</option>
+              <option value="wipe">Wipe</option>
+            </select>
+          </label>
+        </div>
+        <div>
+          <label>
+            Merge:
+            <input type="range" class="toolbar-range" data-var="--selection-merge" min="1" max="100" step="1" value="1" aria-label="Merge distance in pixels">
+            <output>1px</output>
+          </label>
+          <label>
+            Radius:
+            <input type="range" class="toolbar-range" data-var="--selection-radius" min="0" max="24" step="1" value="9" aria-label="Selection corner radius in pixels">
+            <output>9px</output>
+          </label>
+          <label>
+            Padding:
+            <input type="range" class="toolbar-range" data-var="--selection-pad-x" min="0" max="16" step="1" value="5" aria-label="Selection padding in pixels">
+            <output>5px</output>
+          </label>
+        </div>
+        <div>
+          <label><input type="checkbox" class="toolbar-native"> Native</label>
+        </div>
+      </div>
+    </header>
+    <main>
+      <div>
+        <hgroup>
+          <p>Visual selection layer</p>
+          <h1>Smoother content<br>selection component</h1>
+        </hgroup>
+        <p>
+          Lines, small text and pictures merge into a single padded shape with
+          softly rounded corners, even where lines meet.
+        </p>
+        <form aria-label="Subscribe to updates">
+          <!-- type="text" + inputmode="email": email inputs hide their selection offsets, so they could not use the merged layer. -->
+          <input type="text" inputmode="email" name="email" placeholder="@" autocomplete="email" spellcheck="false" required pattern="[^@\s]+@[^@\s]+\.[^@\s]+" aria-label="Email address">
+          <button type="submit">Subscribe</button>
+        </form>
+        <p class="page-status" aria-live="polite">
+          Drag across anything, the form included.
+        </p>
+      </div>
+
+      <section aria-label="Selectable preview text">
+        <!-- EDIT: photos and preview content. -->
+        <p>
+          <span aria-hidden="true"></span>
+          <span><strong>Dev Ieffe</strong><br><small>Notes · 2026</small></span>
+        </p>
+        <p>
+          Quiet light on white walls<sup>1</sup>. Native highlights stack a layer
+          per fragment, so <small>small print</small>, <code>inline code</code>
+          and keys like <kbd>⌘</kbd> <kbd>A</kbd> leave seams between lines.
+        </p>
+        <figure>
+          <img src="tennisbg.jpg" alt="Blue hard tennis court with white lines" width="960" height="420">
+          <figcaption>Photo · selected together with its caption.</figcaption>
+        </figure>
+        <p>
+          Inline images <img src="tennisbg.jpg" alt="Blue tennis court" width="44" height="28">
+          stand taller than text, tags like <mark>New</mark>
+          <mark>Beta</mark> run smaller, yet one layer wraps them.
+        </p>
+        <ul>
+          <li>
+            <img src="https://picsum.photos/seed/setext-one/96/96" alt="Thumbnail" width="48" height="48">
+            <strong>Selection geometry</strong>
+            <small>Padded, unioned and traced</small>
+          </li>
+          <li>
+            <img src="https://picsum.photos/seed/setext-two/96/96" alt="Thumbnail" width="48" height="48">
+            <strong>Rounded intersections</strong>
+            <small>Convex and concave corners share one radius</small>
+          </li>
+        </ul>
+      </section>
+    </main>
+    <footer>
+      <span>Visual selection layer</span>
+      <span>No dependencies · your HTML stays the same</span>
+    </footer>
+    <!--
+      Visual selection layer needs no dependencies and no markup changes: the HTML stays the same, just add
+      VisualSelectionLayer.js (optionally tune it with --selection-* CSS variables, see VisualSelectionLayer.css).
+      toolbar.* and page.* are the preview only and know nothing about each other.
+    -->
+    <script src="VisualSelectionLayer.js"></script>
+    <script src="page.js"></script>
+    <script src="toolbar.js"></script>
+  </body>
+</html>

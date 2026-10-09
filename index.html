@@ -1,142 +1,328 @@
 <!doctype html>
-<!-- Visual selection layer preview -->
-<!--
-  Photos
-  - Background (white architecture): https://unsplash.com/photos/photo-1517816743773-6e0fd518b4a6
-  - Blue tennis court (figure + inline image): local tennisbg.jpg
-  Remote photos via Unsplash (free to use under the Unsplash License, https://unsplash.com/license);
-  credit belongs to the photographers named on each page. The list thumbnails and the
-  Photo / Ptrn + photo selection fills use placeholder images from https://picsum.photos.
-  Replace any of them by editing the URLs below (EDIT: photos), in page.css and in toolbar.js PRESETS.
--->
 <html lang="en">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Single-layer text selection</title>
-    <!-- Plain CSS with native nesting: no build step. Highlight, page and toolbar are independent. -->
-    <link rel="stylesheet" href="VisualSelectionLayer.css">
-    <link rel="stylesheet" href="page.css">
-    <link rel="stylesheet" href="toolbar.css">
-  </head>
-  <body>
-    <header class="toolbar visual-selection-layer-ignore" aria-label="Selection controls">
-      <div>
-        <div>
-          <button type="button" class="toolbar-select" data-select="main > section" data-status="Preview selected as one merged highlight." aria-label="Select preview" title="Select preview"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="14" rx="2"/><path d="M8 10h8M8 14h5"/></svg></button>
-          <button type="button" class="toolbar-select-all" data-select="main" data-status="Whole page selected as one merged layer." aria-label="Select page" title="Select page"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3"/><path d="M9 10h6M9 14h6"/></svg></button>
-          <button type="button" class="toolbar-replay" aria-label="Replay effect" title="Replay effect"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.4-5.7"/><path d="M4 4v4.5h4.5"/></svg></button>
-          <button type="button" class="toolbar-clear" aria-label="Clear selection" title="Clear selection"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
-        </div>
-        <div>
-          <label>
-            Fill:
-            <select class="toolbar-preset" data-group="fill" data-label="Fill">
-              <option value="lime">Lime</option>
-              <option value="grey">Light</option>
-              <option value="inverse">Blue</option>
-              <option value="gradient">Gradient</option>
-              <option value="photo">Photo URL</option>
-              <option value="layered">Ptrn + photo</option>
-            </select>
-          </label>
-          <label>
-            Effect:
-            <select class="toolbar-preset" data-group="effect" data-label="Effect">
-              <option value="none">None</option>
-              <option value="fade">Fade</option>
-              <option value="blur">Blur</option>
-              <option value="wipe">Wipe</option>
-            </select>
-          </label>
-        </div>
-        <div>
-          <label>
-            Merge:
-            <input type="range" class="toolbar-range" data-var="--selection-merge" min="1" max="100" step="1" value="1" aria-label="Merge distance in pixels">
-            <output>1px</output>
-          </label>
-          <label>
-            Radius:
-            <input type="range" class="toolbar-range" data-var="--selection-radius" min="0" max="24" step="1" value="9" aria-label="Selection corner radius in pixels">
-            <output>9px</output>
-          </label>
-          <label>
-            Padding:
-            <input type="range" class="toolbar-range" data-var="--selection-pad-x" min="0" max="16" step="1" value="5" aria-label="Selection padding in pixels">
-            <output>5px</output>
-          </label>
-        </div>
-        <div>
-          <label><input type="checkbox" class="toolbar-native"> Native</label>
-        </div>
-      </div>
-    </header>
-    <main>
-      <div>
-        <hgroup>
-          <p>Visual selection layer</p>
-          <h1>Smoother content<br>selection component</h1>
-        </hgroup>
-        <p>
-          Lines, small text and pictures merge into a single padded shape with
-          softly rounded corners, even where lines meet.
-        </p>
-        <form aria-label="Subscribe to updates">
-          <!-- type="text" + inputmode="email": email inputs hide their selection offsets, so they could not use the merged layer. -->
-          <input type="text" inputmode="email" name="email" placeholder="@" autocomplete="email" spellcheck="false" required pattern="[^@\s]+@[^@\s]+\.[^@\s]+" aria-label="Email address">
-          <button type="submit">Subscribe</button>
-        </form>
-        <p class="page-status" aria-live="polite">
-          Drag across anything, the form included.
-        </p>
-      </div>
+    <title>VisualSelectionLayer | one smooth layer for page selection</title>
+    <meta name="description" content="Draws the whole page selection as one smooth layer with padding and rounded corners, even where lines meet. No dependencies, your HTML stays the same.">
+    <meta name="author" content="Dev Ieffe">
+    <meta name="copyright" content="© 2026 Dev Ieffe. VisualSelectionLayer. Licensed under PolyForm Noncommercial 1.0.0.">
+    <meta name="keywords" content="text selection, ::selection, selection highlight, rounded selection, custom highlight, JavaScript, React, CSS variables">
+    <meta name="robots" content="index, follow, max-image-preview:large">
+    <meta name="theme-color" content="#ffffff">
+    <meta name="color-scheme" content="light">
+    <link rel="canonical" href="https://devieffe.github.io/VisualSelectionLayer-fe/">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%23ff2d87'/%3E%3Cpath d='M9 11h14M9 16h10M9 21h12' stroke='%23fff3f8' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E">
+    <link rel="license" href="https://github.com/devieffe/VisualSelectionLayer-fe/blob/main/LICENSE.md">
 
-      <section aria-label="Selectable preview text">
-        <!-- EDIT: photos and preview content. -->
-        <p>
-          <span aria-hidden="true"></span>
-          <span><strong>Dev Ieffe</strong><br><small>Notes · 2026</small></span>
-        </p>
-        <p>
-          Quiet light on white walls<sup>1</sup>. Native highlights stack a layer
-          per fragment, so <small>small print</small>, <code>inline code</code>
-          and keys like <kbd>⌘</kbd> <kbd>A</kbd> leave seams between lines.
-        </p>
-        <figure>
-          <img src="tennisbg.jpg" alt="Blue hard tennis court with white lines" width="960" height="420">
-          <figcaption>Photo · selected together with its caption.</figcaption>
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="VisualSelectionLayer">
+    <meta property="og:locale" content="en_US">
+    <meta property="og:url" content="https://devieffe.github.io/VisualSelectionLayer-fe/">
+    <meta property="og:title" content="VisualSelectionLayer | one smooth layer for page selection">
+    <meta property="og:description" content="One smooth selection layer with padding and rounded corners. No dependencies, your HTML stays the same.">
+    <meta property="og:image" content="https://raw.githubusercontent.com/devieffe/VisualSelectionLayer-fe/refs/heads/main/demo.gif">
+    <meta property="og:image:secure_url" content="https://raw.githubusercontent.com/devieffe/VisualSelectionLayer-fe/refs/heads/main/demo.gif">
+    <meta property="og:image:type" content="image/gif">
+    <meta property="og:image:width" content="640">
+    <meta property="og:image:height" content="422">
+    <meta property="og:image:alt" content="Selections across text, photos and small print merging into one rounded layer">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://devieffe.github.io/VisualSelectionLayer-fe/">
+    <meta name="twitter:title" content="VisualSelectionLayer | one smooth layer for page selection">
+    <meta name="twitter:description" content="One smooth selection layer with padding and rounded corners. No dependencies, your HTML stays the same.">
+    <meta name="twitter:image" content="https://raw.githubusercontent.com/devieffe/VisualSelectionLayer-fe/refs/heads/main/demo.gif">
+    <meta name="twitter:image:alt" content="Selections across text, photos and small print merging into one rounded layer">
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "WebSite",
+            "@id": "https://devieffe.github.io/VisualSelectionLayer-fe/#website",
+            "url": "https://devieffe.github.io/VisualSelectionLayer-fe/",
+            "name": "VisualSelectionLayer",
+            "inLanguage": "en"
+          },
+          {
+            "@type": "WebPage",
+            "@id": "https://devieffe.github.io/VisualSelectionLayer-fe/#webpage",
+            "url": "https://devieffe.github.io/VisualSelectionLayer-fe/",
+            "name": "VisualSelectionLayer | one smooth layer for page selection",
+            "description": "Paints the whole page selection as one smooth layer with padding and rounded corners, even where lines meet. No dependencies, your HTML stays the same.",
+            "inLanguage": "en",
+            "isPartOf": { "@id": "https://devieffe.github.io/VisualSelectionLayer-fe/#website" },
+            "about": { "@id": "https://devieffe.github.io/VisualSelectionLayer-fe/#software" },
+            "primaryImageOfPage": {
+              "@type": "ImageObject",
+              "url": "https://raw.githubusercontent.com/devieffe/VisualSelectionLayer-fe/refs/heads/main/demo.gif",
+              "width": 640,
+              "height": 422
+            }
+          },
+          {
+            "@type": "SoftwareSourceCode",
+            "@id": "https://devieffe.github.io/VisualSelectionLayer-fe/#software",
+            "name": "VisualSelectionLayer",
+            "description": "A dependency-free script that paints the page selection as one merged layer with padding and rounded corners on every outer and inner corner.",
+            "url": "https://devieffe.github.io/VisualSelectionLayer-fe/",
+            "codeRepository": "https://github.com/devieffe/VisualSelectionLayer-fe",
+            "programmingLanguage": ["JavaScript", "CSS"],
+            "runtimePlatform": "Web browser",
+            "keywords": "text selection, ::selection, highlight, React",
+            "license": "https://polyformproject.org/licenses/noncommercial/1.0.0",
+            "image": "https://raw.githubusercontent.com/devieffe/VisualSelectionLayer-fe/refs/heads/main/demo.gif",
+            "author": { "@id": "https://g.ieffe.dev/#person" },
+            "copyrightHolder": { "@id": "https://g.ieffe.dev/#person" },
+            "copyrightYear": 2026
+          },
+          {
+            "@type": "Person",
+            "@id": "https://g.ieffe.dev/#person",
+            "name": "Dev Ieffe",
+            "url": "https://g.ieffe.dev/",
+            "sameAs": ["https://www.linkedin.com/in/devieffe"]
+          }
+        ]
+      }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Montserrat:wght@800;900&display=swap">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style type="text/tailwindcss">
+      @theme {
+        --breakpoint-*: initial;
+        --breakpoint-sm: 561px;
+        --breakpoint-md: 901px;
+        --font-display: "Montserrat", system-ui, sans-serif;
+        --font-body: "Lato", system-ui, sans-serif;
+        --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+        --color-ink: #000;
+        --color-nav: #1c1c1c;
+        --color-muted: #707070;
+        --color-code: #f5f5f5;
+        /* Everything is at full size from 1440px and scales down linearly to 375px. */
+        --spacing: calc(2.4px + 1.6 * var(--k));
+        --text-body: calc(18px + 6 * var(--k));
+        --text-bar: 20px;
+        --text-h1: calc(40px + 34 * var(--k));
+        --text-hero: calc(22px + 12 * var(--k));
+        --text-h2: calc(32px + 20 * var(--k));
+        --text-h3: calc(22px + 8 * var(--k));
+        --text-lead: calc(20px + 8 * var(--k));
+        --text-btn: min(calc(18px + 9 * var(--k)), (100vw - 40px) / 19.5);
+        --text-col: calc(15px + 9 * var(--k));
+        --text-note: 18px;
+        --text-mono: calc(14px + 4 * var(--k));
+      }
+
+      /* Unlayered so it beats the engine defaults in :where(:root).
+         The layer sits behind the content, so selected text shows in its own colour on the pink fill. */
+      :root {
+        --k: clamp(0px, (100vw - 375px) / 1065, 1px);
+        --selection-color: #ff4f9a;
+        --selection-text-color: #fff3f8;
+        --selection-blend: normal;
+        --selection-z-index: -1;
+        --selection-radius: 18px;
+        --selection-pad-x: 12px;
+        --selection-pad-y: 7px;
+        --selection-merge: 56px;
+        --selection-effect: fade;
+        --selection-image-anchor: selection;
+      }
+
+      @layer base {
+        html { scroll-behavior: smooth; }
+        @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+        :focus-visible { @apply outline-3 outline-offset-4 outline-ink; }
+        [id] { scroll-margin-top: calc(var(--bar-h) + 1rem); }
+        :root { --bar-h: 76px; @variant sm { --bar-h: 60px; } }
+        body { @apply bg-white font-body text-body/[1.65] text-ink antialiased; }
+        h1, h2, h3 { @apply font-display; }
+        h2 { @apply text-h2/[1.08] font-extrabold; }
+        h3 { @apply text-h3/[1.25] font-extrabold; }
+        pre { @apply overflow-x-auto py-4.5 pr-16 pl-5 text-mono/[1.6]; }
+      }
+
+      @utility wrap {
+        width: min(1440px, 100% - 2 * (20px + 36 * var(--k)));
+        margin-inline: auto;
+      }
+
+      @utility note {
+        @apply text-note/[1.5] text-muted;
+      }
+
+      /* Paints a background below the selection layer, which sits at z-index -1. */
+      @utility bg-under-* {
+        position: relative;
+        &::before { content: ""; position: absolute; inset: 0; z-index: -2; border-radius: inherit; background: --value(--color-*); }
+      }
+
+      @layer components {
+        .btn { @apply inline-flex items-center gap-[0.45em] rounded-2xl border-2 border-transparent px-[1.04em] py-[0.6em] text-btn/none font-bold; }
+        .btn svg { @apply size-[1.1em] shrink-0; }
+        .lead { @apply mt-19.5 max-w-[1100px] text-lead/[1.4]; }
+        .code { @apply mb-3.5 rounded-xl bg-under-code; }
+        .copy { @apply absolute top-[calc(var(--spacing)*4.5+var(--text-mono)*0.8-20px)] right-[5px] grid size-[40px] place-items-center rounded-lg bg-code text-muted select-none; }
+        .copy svg { @apply size-[22px]; }
+        .copy .done, .copy.is-copied .idle { @apply hidden; }
+        .copy.is-copied .done { @apply block text-ink; }
+      }
+    </style>
+  </head>
+  <body class="pt-(--bar-h)">
+    <a class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-30 focus:rounded-xl focus:bg-ink focus:px-5 focus:py-3 focus:font-bold focus:text-white" href="#main">Skip to content</a>
+    <header class="group fixed inset-x-0 top-0 z-20 flex flex-wrap items-center justify-between gap-x-8.5 bg-white px-[calc(20px+36*var(--k))] py-[14px] text-bar/[1.2] text-nav sm:py-[18px] md:pr-11 md:pl-7">
+      <a class="font-bold" href="#main" aria-label="VisualSelectionLayer, home">VisualSelectionLayer</a>
+      <button class="-mr-2 grid size-[48px] translate-y-[3px] cursor-pointer place-items-center sm:hidden" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="menu" id="menu-toggle">
+        <svg class="size-[30px] group-data-open:hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        <svg class="hidden size-[30px] group-data-open:block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+      <nav class="invisible grid w-full grid-rows-[0fr] opacity-0 transition-[grid-template-rows,opacity,visibility] duration-300 ease-out group-data-open:visible group-data-open:grid-rows-[1fr] group-data-open:opacity-100 motion-reduce:transition-none sm:visible sm:block sm:w-auto sm:opacity-100 sm:transition-none" id="menu" aria-label="Primary">
+        <div class="min-h-0 overflow-hidden sm:overflow-visible">
+          <ul class="flex -translate-y-2 text-ink flex-col gap-[28px] pt-7 pb-5 transition-transform duration-300 ease-out group-data-open:translate-y-0 motion-reduce:transition-none sm:translate-y-0 sm:flex-row sm:items-center sm:gap-8.5 sm:p-0 sm:transition-none">
+            <li><a href="#try">Demo</a></li>
+            <li><a href="#install">Install</a></li>
+            <li><a href="https://github.com/devieffe/VisualSelectionLayer-fe" rel="noopener">GitHub</a></li>
+          </ul>
+        </div>
+      </nav>
+    </header>
+
+    <main id="main" tabindex="-1" class="outline-none">
+      <section aria-labelledby="hero-title" class="wrap grid grid-cols-1 items-center gap-x-18 pt-26 pb-18 md:grid-cols-2">
+        <div class="contents md:block">
+          <h1 id="hero-title" class="text-h1/[1.08] font-black tracking-[-0.01em]">Make every selection look designed</h1>
+          <p class="order-2 mt-20 text-hero/[1.5] md:order-none md:mt-12">VisualSelectionLayer turns the browser’s patchy highlight into a smooth, padded, soft layer. Single script, zero dependencies.</p>
+          <div class="order-2 mt-15 flex gap-[0.9em] text-btn *:whitespace-nowrap md:order-none">
+            <a class="btn bg-under-ink px-[1.5em] text-white" href="#try">Try it free</a>
+            <a class="btn" href="https://github.com/devieffe/VisualSelectionLayer-fe" rel="noopener"><svg viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>See on GitHub</a>
+          </div>
+        </div>
+        <figure class="order-1 mt-16 self-start md:order-none md:mt-6">
+          <picture>
+            <source srcset="demo-still.png" media="(prefers-reduced-motion: reduce)">
+            <img class="w-full rounded-[18px]" src="demo.gif" alt="Selections across text, photos and small print merging into one rounded layer" width="640" height="422" fetchpriority="high">
+          </picture>
+          <figcaption class="note mt-3.5 text-center">Select anything on this page, it runs here too.</figcaption>
         </figure>
-        <p>
-          Inline images <img src="tennisbg.jpg" alt="Blue tennis court" width="44" height="28">
-          stand taller than text, tags like <mark>New</mark>
-          <mark>Beta</mark> run smaller, yet one layer wraps them.
-        </p>
-        <ul>
-          <li>
-            <img src="https://picsum.photos/seed/setext-one/96/96" alt="Thumbnail" width="48" height="48">
-            <strong>Selection geometry</strong>
-            <small>Padded, unioned and traced</small>
-          </li>
-          <li>
-            <img src="https://picsum.photos/seed/setext-two/96/96" alt="Thumbnail" width="48" height="48">
-            <strong>Rounded intersections</strong>
-            <small>Convex and concave corners share one radius</small>
-          </li>
-        </ul>
+      </section>
+
+      <section class="wrap mt-20 py-16" aria-labelledby="why">
+        <h2 id="why">Why one layer</h2>
+        <p class="lead">The native highlight paints every line and element on its own. Rows overlap, gaps flicker between them, images turn blue and the corners stay sharp. VisualSelectionLayer draws the whole selection as a single shape, so it reads as one clean mark.</p>
+        <div class="mt-28 grid grid-cols-1 gap-16 md:grid-cols-3 [&_h3]:mb-5.5 [&_p]:mb-3.5 [&_p]:text-col/normal">
+          <div>
+            <h3>One shape, no seams</h3>
+            <p>Lines, words and blocks merge into one outline. Overlaps never double the colour and gaps between rows close up.</p>
+            <ul class="flex flex-wrap gap-x-5.5 gap-y-1.5 text-muted" aria-label="Tags"><li>union</li><li>no-overlap</li></ul>
+          </div>
+          <div>
+            <h3>Softer at every corner</h3>
+            <p>Padding and radius apply to outer and inner corners alike, from large headings down to 2px steps beside small print.</p>
+            <ul class="flex flex-wrap gap-x-5.5 gap-y-1.5 text-muted" aria-label="Tags"><li>padding</li><li>radius</li></ul>
+          </div>
+          <div>
+            <h3>Add it, that's it</h3>
+            <p>Add one script or the React component. Your HTML, copy and paste stay exactly as they are. Style it with CSS variables.</p>
+            <ul class="flex flex-wrap gap-x-5.5 gap-y-1.5 text-muted" aria-label="Tags"><li>vanilla JS</li><li>React</li><li>zero deps</li></ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="wrap mt-20 py-16" id="try" aria-labelledby="try-title">
+        <h2 id="try-title">Try it</h2>
+        <p class="lead">Drag across the preview, switch fills and effects, tune merge, radius and padding.</p>
+        <div class="visual-selection-layer-ignore mt-26 select-none [&_.codepen]:h-[min(760px,85vh)] [&_iframe]:h-[min(760px,85vh)] [&_iframe]:w-full">
+          <p class="codepen" data-height="760" data-default-tab="result" data-slug-hash="01a11b28-e88b-74b9-b587-37fc0b64fb94" data-pen-title="VisualSelectionLayer" data-user="devieffe">
+            <span>See the Pen <a href="https://codepen.io/devieffe/pen/01a11b28-e88b-74b9-b587-37fc0b64fb94">VisualSelectionLayer</a> by Dev Ieffe on <a href="https://codepen.io">CodePen</a>.</span>
+          </p>
+        </div>
+      </section>
+
+      <section class="wrap mt-20 py-16" id="install" aria-labelledby="install-title">
+        <h2 id="install-title">Install</h2>
+        <div class="mt-24 grid grid-cols-1 gap-x-12 md:grid-cols-2 [&>div]:row-span-4 [&>div]:min-w-0 [&>div]:grid-cols-1 [&>div]:grid [&>div]:grid-rows-subgrid [&_h3]:mb-6 [&_p]:note [&_p]:wrap-break-word">
+          <div>
+            <h3>HTML</h3>
+            <div class="code"><pre tabindex="0"><code>&lt;script src="VisualSelectionLayer.js"&gt;&lt;/script&gt;</code></pre><button class="copy" type="button" aria-label="Copy code"><svg class="idle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1"/></svg><svg class="done" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button></div>
+            <div class="code"><pre tabindex="0"><code>:root {
+  --selection-color: #d4f53c;
+  --selection-radius: 9px;
+  --selection-effect: fade;
+}</code></pre><button class="copy" type="button" aria-label="Copy code"><svg class="idle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1"/></svg><svg class="done" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button></div>
+            <p>Copy <code>html/VisualSelectionLayer.js</code> into your project.</p>
+          </div>
+          <div>
+            <h3 class="mt-8 md:mt-0">React</h3>
+            <div class="code"><pre tabindex="0"><code>npm i visual-selection-layer-react</code></pre><button class="copy" type="button" aria-label="Copy code"><svg class="idle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1"/></svg><svg class="done" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button></div>
+            <div class="code"><pre tabindex="0"><code>import { VisualSelectionLayer }
+  from "visual-selection-layer-react";
+
+&lt;VisualSelectionLayer vars={{ color: "#d4f53c" }} /&gt;</code></pre><button class="copy" type="button" aria-label="Copy code"><svg class="idle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1"/></svg><svg class="done" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button></div>
+            <p>Optional GSAP effects: pop, rise, stretch.</p>
+          </div>
+        </div>
       </section>
     </main>
-    <footer>
-      <span>Visual selection layer</span>
-      <span>No dependencies · your HTML stays the same</span>
+
+    <footer class="wrap mt-40 flex flex-wrap justify-between gap-3 pt-9 pb-12 text-note/[1.5]">
+      <p><span id="year" class="mr-2">2026</span><a class="font-bold text-ink" href="https://g.ieffe.dev/" rel="author">Dev Ieffe</a></p>
+      <p>Recent Chrome, Edge, Firefox and Safari</p>
     </footer>
-    <!--
-      Visual selection layer needs no dependencies and no markup changes: the HTML stays the same, just add
-      VisualSelectionLayer.js (optionally tune it with --selection-* CSS variables, see VisualSelectionLayer.css).
-      toolbar.* and page.* are the preview only and know nothing about each other.
-    -->
-    <script src="VisualSelectionLayer.js"></script>
-    <script src="page.js"></script>
-    <script src="toolbar.js"></script>
+    <p class="sr-only" id="status" role="status" aria-live="polite"></p>
+
+    <script>
+      document.getElementById("year").textContent = new Date().getFullYear();
+
+      const header = document.querySelector("header");
+      const toggle = document.getElementById("menu-toggle");
+      const setMenu = (open) => {
+        header.toggleAttribute("data-open", open);
+        toggle.setAttribute("aria-expanded", open);
+        toggle.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+      };
+      toggle.addEventListener("click", () => setMenu(!header.hasAttribute("data-open")));
+      document.getElementById("menu").addEventListener("click", (event) => event.target.closest("a") && setMenu(false));
+      addEventListener("keydown", (event) => {
+        if (event.key !== "Escape" || !header.hasAttribute("data-open")) return;
+        setMenu(false);
+        toggle.focus();
+      });
+
+      async function copyText(text) {
+        try {
+          await navigator.clipboard.writeText(text);
+        } catch {
+          const area = Object.assign(document.createElement("textarea"), { value: text });
+          document.body.append(area);
+          area.select();
+          document.execCommand("copy");
+          area.remove();
+        }
+      }
+      const status = document.getElementById("status");
+      document.querySelectorAll(".copy").forEach((button) => {
+        button.addEventListener("click", async () => {
+          await copyText(button.parentElement.querySelector("code").textContent);
+          button.classList.add("is-copied");
+          button.setAttribute("aria-label", "Copied");
+          status.textContent = "";
+          requestAnimationFrame(() => { status.textContent = "Code copied to clipboard"; });
+          clearTimeout(button.timer);
+          button.timer = setTimeout(() => {
+            button.classList.remove("is-copied");
+            button.setAttribute("aria-label", "Copy code");
+          }, 1600);
+        });
+      });
+    </script>
+    <script src="html/VisualSelectionLayer.js"></script>
+    <script async src="https://public.codepenassets.com/embed/index.js"></script>
   </body>
 </html>

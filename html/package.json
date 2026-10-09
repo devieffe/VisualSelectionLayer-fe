@@ -1,0 +1,33 @@
+{
+  "name": "vsl",
+  "version": "0.1.0",
+  "description": "Visual layer for page selection, with standalone JavaScript and CSS configuration.",
+  "type": "module",
+  "main": "./VisualSelectionLayer.js",
+  "exports": {
+    ".": "./VisualSelectionLayer.js",
+    "./VisualSelectionLayer.js": "./VisualSelectionLayer.js",
+    "./VisualSelectionLayer.css": "./VisualSelectionLayer.css",
+    "./package.json": "./package.json"
+  },
+  "unpkg": "./VisualSelectionLayer.js",
+  "files": [
+    "VisualSelectionLayer.js",
+    "VisualSelectionLayer.css",
+    "LICENSE.md",
+    "README.md"
+  ],
+  "sideEffects": [
+    "./VisualSelectionLayer.js",
+    "./VisualSelectionLayer.css"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/devieffe/vsl.git",
+    "directory": "html"
+  },
+  "homepage": "https://devieffe.github.io/vsl/",
+  "keywords": ["selection", "highlight", "text-selection", "react", "gsap", "ui"],
+  "author": "Dev Ieffe",
+  "license": "PolyForm-Noncommercial-1.0.0"
+}

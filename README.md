@@ -19,6 +19,13 @@ No dependencies, no build step, and your HTML stays the same.
 
 CSS: `html/VisualSelectionLayer.css`
 
+After publishing the npm package, the script is also available through UNPKG:
+
+```html
+<link rel="stylesheet" href="https://unpkg.com/vsl@0.1.0/VisualSelectionLayer.css">
+<script src="https://unpkg.com/vsl@0.1.0/VisualSelectionLayer.js"></script>
+```
+
 ```css
 :root {
   --selection-color: #d4f53c;
@@ -40,11 +47,11 @@ Vars and options: `html/VisualSelectionLayer.js`.
 ## Install (React)
 
 ```bash
-npm i visual-selection-layer-react
+npm i react
 ```
 
 ```jsx
-import { VisualSelectionLayer } from "visual-selection-layer-react";
+import { VisualSelectionLayer } from "./react/index.js";
 
 <VisualSelectionLayer vars={{ color: "#d4f53c", radius: "9px" }} />
 ```
@@ -57,7 +64,7 @@ npm i gsap
 
 ```jsx
 import gsap from "gsap";
-import { VisualSelectionLayer } from "visual-selection-layer-react"; // or "./VisualSelectionLayer" if you copied the folder
+import { VisualSelectionLayer } from "./react/index.js";
 
 <VisualSelectionLayer gsap={gsap} effect="pop" /> // pop | rise | stretch
 ```
@@ -65,6 +72,29 @@ import { VisualSelectionLayer } from "visual-selection-layer-react"; // or "./Vi
 ## Browsers
 
 Recent Chrome, Edge, Firefox and Safari. 
+
+## Publishing to npm / UNPKG
+
+Publish from `html/`. The package includes `VisualSelectionLayer.js` and
+`VisualSelectionLayer.css` at its root, plus the package metadata, README and license.
+The engine files are published directly, without generated root copies.
+Demo files and the `react/` and `codepen/` folders are not published.
+For React integration, copy the repository's `react/` folder into your project;
+it is not included in the `vsl` npm package.
+
+```bash
+cd html
+npm pack --dry-run
+npm login
+npm publish --access public
+```
+
+UNPKG serves the published npm files automatically. Versioned file URLs:
+
+- `https://unpkg.com/vsl@0.1.0/VisualSelectionLayer.js`
+- `https://unpkg.com/vsl@0.1.0/VisualSelectionLayer.css`
+
+Increase the version in `html/package.json` before publishing subsequent releases.
 
 ## License
 

@@ -1,14 +1,16 @@
 # Visual selection layer · React + GSAP
 
 ```bash
-npm i visual-selection-layer-react
+npm i react
 ```
 
-`VisualSelectionLayer.js` is a copy of the engine in the parent folder; keep the two in sync.
+`VisualSelectionLayer.js` is a copy of `../html/VisualSelectionLayer.js`; keep the two in sync.
+Copy this folder from the repository into your project. The standalone `vsl` npm
+package does not include the React integration.
 
 ```jsx
 import gsap from "gsap"; // optional
-import { VisualSelectionLayer, VisualSelectionLayerScope } from "visual-selection-layer-react"; // or "./VisualSelectionLayer/react" if copied
+import { VisualSelectionLayer, VisualSelectionLayerScope } from "./react/index.js";
 
 <VisualSelectionLayer vars={{ color: "#d4f53c", radius: "9px" }} />            // CSS effects (--selection-effect)
 <VisualSelectionLayer gsap={gsap} effect="pop" />                              // GSAP: pop | rise | stretch | { show, hide }

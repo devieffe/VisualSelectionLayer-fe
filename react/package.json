@@ -28,10 +28,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/devieffe/VisualSelectionLayer-fe.git",
+    "url": "git+https://github.com/devieffe/VisualSelectionLayer.git",
     "directory": "react"
   },
-  "homepage": "https://github.com/devieffe/VisualSelectionLayer-fe#readme",
+  "homepage": "https://github.com/devieffe/VisualSelectionLayer#readme",
   "keywords": ["react", "selection", "highlight", "text-selection", "gsap", "ui"],
   "author": "Dev Ieffe",
   "license": "PolyForm-Noncommercial-1.0.0"

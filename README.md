@@ -42,6 +42,8 @@ Vars and options: `html/VisualSelectionLayer.js`.
 
 - Add `visual-selection-layer-ignore` to an element to keep the native selection there.
 - Put `--selection-*` variables on any class to give that area its own look.
+- Elements with `user-select: none` add no selection shape or media tint. If padding
+  or a merged selection overlaps them, that part of the layer paints above them.
 - JS API: `VisualSelectionLayer.enable()`, `VisualSelectionLayer.disable()`, `VisualSelectionLayer.refresh()`, and `VisualSelectionLayer.on("show" | "update" | "hide", fn)`.
 
 ## Install (React)
@@ -51,10 +53,13 @@ npm i react
 ```
 
 ```jsx
-import { VisualSelectionLayer } from "./react/index.js";
+import VisualSelectionLayer from "./VisualSelectionLayer.js";
 
 <VisualSelectionLayer vars={{ color: "#d4f53c", radius: "9px" }} />
 ```
+
+Copy `react/VisualSelectionLayer.js` into your project. It includes the engine
+and React lifecycle logic; no other local files are required.
 
 ### With GSAP
 
@@ -64,37 +69,19 @@ npm i gsap
 
 ```jsx
 import gsap from "gsap";
-import { VisualSelectionLayer } from "./react/index.js";
+import VisualSelectionLayerGsap from "./VisualSelectionLayerGsap.js";
 
-<VisualSelectionLayer gsap={gsap} effect="pop" /> // pop | rise | stretch
+<VisualSelectionLayerGsap gsap={gsap} effect="pop" /> // pop | rise | stretch
 ```
+
+Copy `react/VisualSelectionLayerGsap.js` instead for the self-contained GSAP version.
+Mount only one version per page. Both files also export `VisualSelectionLayerScope`
+for scoped styles and native-selection opt-outs. Import components and hooks directly
+from the chosen file; there are no wrapper or index files.
 
 ## Browsers
 
 Recent Chrome, Edge, Firefox and Safari. 
-
-## Publishing to npm / UNPKG
-
-Publish from `html/`. The package includes `VisualSelectionLayer.js` and
-`VisualSelectionLayer.css` at its root, plus the package metadata, README and license.
-The engine files are published directly, without generated root copies.
-Demo files and the `react/` and `codepen/` folders are not published.
-For React integration, copy the repository's `react/` folder into your project;
-it is not included in the `vsl` npm package.
-
-```bash
-cd html
-npm pack --dry-run
-npm login
-npm publish --access public
-```
-
-UNPKG serves the published npm files automatically. Versioned file URLs:
-
-- `https://unpkg.com/vsl@0.1.0/VisualSelectionLayer.js`
-- `https://unpkg.com/vsl@0.1.0/VisualSelectionLayer.css`
-
-Increase the version in `html/package.json` before publishing subsequent releases.
 
 ## License
 

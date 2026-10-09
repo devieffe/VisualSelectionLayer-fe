@@ -1,7 +1,9 @@
+import { createElement, useEffect, useRef } from "react";
+
 /*
  * visual-selection-layer: single-layer selection highlight.
  *
- * Drop-in: load VisualSelectionLayer.js with a script tag. It applies to every selectable element in <body>
+ * Embedded engine: initialized by the React component's effect. It applies to every selectable element in <body>
  * and is configured only with CSS variables (defaults are injected with zero specificity, so
  * any `:root { ... }` or class rule overrides them):
  *
@@ -26,7 +28,8 @@
  *
  * Variables can be set on any class: the element that contains the whole selection decides the look.
  * Same-origin iframes get their own layer with the page's --selection-* theme (cross-origin ones are tinted boxes).
- * user-select: none elements inside a selection are covered as whole tinted boxes, like media.
+ * user-select: none elements add no selection geometry or media tint. Overlapping selection paints above them
+ * and fades out with the layer on hide, without moving them.
  * Classes: .visual-selection-layer-scope (opt in), .visual-selection-layer-ignore (opt out, native highlight), .visual-selection-layer-overlay (the layer).
  * API: window.VisualSelectionLayer.refresh(), .enable(), .disable() (removes all styles, layer, and listeners), .enabled
  *   .on(type, fn) -> off(): "show" | "update" | "hide", fn({ overlay, fill, box, loops, effect }).
@@ -34,9 +37,9 @@
  *   A "hide" handler may return a promise or a GSAP tween; the layer stays until it settles, so a
  *   JS animation (e.g. GSAP on `fill`, with --selection-effect: none) can play out. See react/ and codepen/.
  */
-(() => {
+function installVisualSelectionLayer(window) {
   "use strict";
-  if (window.VisualSelectionLayer) return;
+  if (window.VisualSelectionLayer) return window.VisualSelectionLayer;
   const installed = new WeakSet();
   const api = install(window);
   installed.add(api);
@@ -260,6 +263,7 @@
     let overlay;
     let fill;
     let tints;
+    let foreground;
     let rulesStyle;
     let rulesKey = "";
     let lastSource = null;
@@ -439,15 +443,6 @@
         return result;
       };
 
-      // The outermost user-select: none element inside the scope. The selection skips its content, so the
-      // layer takes it in as one whole box and covers it like media instead of leaving a hole around it.
-      const isUnselectableBox = (el) =>
-        !isSelectable(el) &&
-        isSelectable(el.parentElement) &&
-        el.closest(scope) !== null &&
-        el.closest(exclude) === null &&
-        styleOf(el).visibility === "visible";
-
       const clipOf = (el) => {
         if (!el || el === document.body || el === document.documentElement) return UNCLIPPED;
         if (clips.has(el)) return clips.get(el);
@@ -525,7 +520,7 @@
         return chain;
       };
 
-      return { exclude, styleOf, isAllowed, isUnselectableBox, clipOf, coverOf, paintedChain };
+      return { exclude, styleOf, isAllowed, isSelectable, clipOf, coverOf, paintedChain };
     }
 
     function textRects(node, range) {
@@ -576,15 +571,6 @@
             return ctx.isAllowed(node.parentElement) ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
           }
           if (node.matches(ctx.exclude)) return NodeFilter.FILTER_REJECT;
-          if (ctx.isUnselectableBox(node)) {
-            const rect = node.getBoundingClientRect();
-            if (rect.width >= 1 && rect.height >= 1 && isContained(node, range)) {
-              const count = boxes.length;
-              add(boxes, [rect], node.parentElement);
-              if (boxes.length > count) media.push({ el: node, rect: boxes[count] });
-            }
-            return NodeFilter.FILTER_REJECT;
-          }
           if (!ctx.isAllowed(node)) return NodeFilter.FILTER_SKIP;
           if (node.matches(MEASURED_FIELDS)) {
             // A page selection passing over a field takes its whole text (or placeholder) into the shape.
@@ -925,14 +911,14 @@
         .join("");
     }
 
-    function setShape(d, width, height) {
+    function setShape(d, width, height, target = fill) {
       if (SHAPE_MODE === "mask") {
         const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}"><path d="${d}"/></svg>`;
         const url = `url("data:image/svg+xml,${encodeURIComponent(svg)}")`;
-        fill.style.webkitMaskImage = url;
-        fill.style.maskImage = url;
+        target.style.webkitMaskImage = url;
+        target.style.maskImage = url;
       } else {
-        fill.style[SHAPE_MODE] = `path("${d}")`;
+        target.style[SHAPE_MODE] = `path("${d}")`;
       }
     }
 
@@ -1075,6 +1061,99 @@
       );
     }
 
+    // Unselectable content is covered by a static tint of the selection colour, drawn once above it.
+    // Disabled elements never contribute rectangles to the selection itself.
+    function renderForeground(loops, ctx, origin, radius, jog) {
+      clearForeground();
+      knockOut(null);
+      if (loops.length === 0) return;
+      const points = loops.flat();
+      // Both passes share edges at the disabled rects; device-pixel edges keep them from leaving seams.
+      const dpr = window.devicePixelRatio || 1;
+      const snap = (v, round = Math.round) => round(v * dpr) / dpr;
+      const bounds = {
+        left: snap(Math.min(...points.map(([x]) => x)), Math.floor),
+        top: snap(Math.min(...points.map(([, y]) => y)), Math.floor),
+        right: snap(Math.max(...points.map(([x]) => x)), Math.ceil),
+        bottom: snap(Math.max(...points.map(([, y]) => y)), Math.ceil),
+      };
+      const rects = [];
+      for (const el of document.body.querySelectorAll("*")) {
+        if (el.closest(`.${CLASS.layer}`) || ctx.isSelectable(el) || ctx.styleOf(el).visibility !== "visible") continue;
+        for (const rect of el.getClientRects()) {
+          const visible = intersect(rect, ctx.clipOf(el.parentElement));
+          const overlap = visible && intersect(visible, bounds);
+          if (!overlap) continue;
+          const left = snap(overlap.left);
+          const top = snap(overlap.top);
+          const right = snap(overlap.right);
+          const bottom = snap(overlap.bottom);
+          if (right > left && bottom > top) rects.push({ left, top, right, bottom, width: right - left, height: bottom - top });
+        }
+      }
+      if (rects.length === 0) return;
+      knockOut(rects);
+      foreground = document.createElement("div");
+      foreground.setAttribute("aria-hidden", "true");
+      foreground.className = "visual-selection-layer-foreground";
+      Object.assign(foreground.style, {
+        position: "absolute",
+        left: `${box.left - origin.left}px`,
+        top: `${box.top - origin.top}px`,
+        width: `${box.width}px`,
+        height: `${box.height}px`,
+        zIndex: "2147483647",
+        pointerEvents: "none",
+        ...rectMask(rects, false),
+      });
+      const tint = document.createElement("div");
+      Object.assign(tint.style, { position: "absolute", inset: "0", backgroundColor: getComputedStyle(fill).backgroundColor });
+      const local = (loop) => loop.map(([x, y]) => [x - box.left, y - box.top]);
+      setShape(roundedPath(loops.map(local), radius, jog), box.width, box.height, tint);
+      foreground.append(tint);
+      layer.append(foreground);
+    }
+
+    // The foreground repaints the selection over disabled elements, so the layer itself is cut out there:
+    // translucent colours would otherwise be painted twice and look darker.
+    function knockOut(rects) {
+      if (SHAPE_MODE === "mask") return;
+      if (!rects) {
+        for (const prop of Object.keys(rectMask([], true))) fill.style[prop] = "";
+        return;
+      }
+      Object.assign(fill.style, rectMask(rects, true));
+    }
+
+    // Solid mask layers per rect, relative to the layer box: either the rects themselves or the box minus them.
+    // The knockout and the foreground share it, so both are rasterized identically and leave no seams.
+    function rectMask(rects, invert) {
+      const solid = "linear-gradient(#000, #000)";
+      const all = invert ? [null, ...rects] : rects;
+      const image = all.map(() => solid).join(", ");
+      const position = all.map((r) => (r ? `${r.left - box.left}px ${r.top - box.top}px` : "0 0")).join(", ");
+      const size = all.map((r) => (r ? `${r.width}px ${r.height}px` : "100% 100%")).join(", ");
+      const composite = all.map((r) => (r ? "add" : "subtract")).join(", ");
+      const webkitComposite = all.map((r) => (r ? "source-over" : "source-out")).join(", ");
+      return {
+        maskImage: image,
+        webkitMaskImage: image,
+        maskPosition: position,
+        webkitMaskPosition: position,
+        maskSize: size,
+        webkitMaskSize: size,
+        maskRepeat: "no-repeat",
+        webkitMaskRepeat: "no-repeat",
+        maskComposite: composite,
+        webkitMaskComposite: webkitComposite,
+      };
+    }
+
+    function clearForeground() {
+      foreground?.remove();
+      foreground = null;
+    }
+
     // ::selection vanishes the moment the selection clears, so the text that was selected is kept in
     // custom highlights whose color animates from --selection-text-color back to the element's own color
     // (currentColor can't be used: inside a highlight it resolves to the highlight's inherited color).
@@ -1116,7 +1195,22 @@
         .map((property) => transitions.find((animation) => animation.transitionProperty === property))
         .find(Boolean);
       fadeText(reference?.effect?.getTiming());
+      fadeForeground(reference?.effect?.getTiming());
       syncCovers();
+    }
+
+    // The tint above user-select:none elements only fades its opacity on the overlay's own timing.
+    function fadeForeground(timing) {
+      if (!foreground) return;
+      const node = foreground;
+      const duration = Number(timing?.duration) || 0;
+      if (duration <= 0) return clearForeground();
+      const animation = node.animate(
+        { opacity: [getComputedStyle(node).opacity, "0"] },
+        { duration, delay: timing.delay, easing: timing.easing, fill: "forwards" },
+      );
+      const done = () => node === foreground && clearForeground();
+      animation.finished.then(done, () => {});
     }
 
     function fadeText(timing) {
@@ -1287,10 +1381,12 @@
 
       const xs = loops.flat().map((p) => p[0]);
       const ys = loops.flat().map((p) => p[1]);
-      const left = xs.length ? Math.min(...xs) : 0;
-      const top = ys.length ? Math.min(...ys) : 0;
-      const width = xs.length ? Math.max(...xs) - left : 0;
-      const height = ys.length ? Math.max(...ys) - top : 0;
+      // The box sits on the device-pixel grid so its knock-out mask lines up with the foreground pass.
+      const dpr = window.devicePixelRatio || 1;
+      const left = xs.length ? Math.floor(Math.min(...xs) * dpr) / dpr : 0;
+      const top = ys.length ? Math.floor(Math.min(...ys) * dpr) / dpr : 0;
+      const width = xs.length ? Math.ceil(Math.max(...xs) * dpr) / dpr - left : 0;
+      const height = ys.length ? Math.ceil(Math.max(...ys) * dpr) / dpr - top : 0;
       const local = loops.map((loop) => loop.map(([x, y]) => [x - left, y - top]));
       const d = roundedPath(local, radius, jog) || "M0 0Z";
       shapeLoops = local;
@@ -1342,6 +1438,10 @@
       }
       overlay.classList.add(CLASS.visible);
       tints.classList.add(CLASS.visible);
+      renderForeground(traceShape({
+        text: [...pieces.flatMap((piece) => piece.text), ...[...coverRects.values()].flat()],
+        boxes: pieces.flatMap((piece) => piece.boxes),
+      }), ctx, origin, radius, jog);
       setCovers(shapes);
       emit(appearing ? "show" : "update");
     }
@@ -1514,6 +1614,7 @@
         document.querySelectorAll("style[data-visual-selection-layer]").forEach((style) => style.remove());
         stopTextFade();
         clearCovers();
+        clearForeground();
         layer?.remove();
         layer = overlay = fill = tints = rulesStyle = fadeStyle = null;
         lastRanges = [];
@@ -1566,4 +1667,49 @@
     else document.addEventListener("DOMContentLoaded", init, { once: true });
     return api;
   }
-})();
+  return api;
+}
+
+export const loadVisualSelectionLayer = () => Promise.resolve(installVisualSelectionLayer(window));
+
+export const toVar = (name) => (name.startsWith("--") ? name : `--selection-${name}`);
+
+export function useCssVars(vars, target) {
+  const key = JSON.stringify(vars ?? {});
+  useEffect(() => {
+    const style = (target?.current ?? document.documentElement).style;
+    const entries = Object.entries(JSON.parse(key)).map(([name, value]) => [toVar(name), value]);
+    const previous = entries.map(([name]) => [name, style.getPropertyValue(name)]);
+    entries.forEach(([name, value]) => style.setProperty(name, String(value)));
+    return () => previous.forEach(([name, value]) => (value ? style.setProperty(name, value) : style.removeProperty(name)));
+  }, [key, target]);
+}
+
+export function useVisualSelectionLayer({ enabled = true, vars, onShow, onUpdate, onHide } = {}) {
+  const handlers = useRef({});
+  handlers.current = { show: onShow, update: onUpdate, hide: onHide };
+  useCssVars(vars);
+
+  useEffect(() => {
+    const engine = installVisualSelectionLayer(window);
+    const offs = ["show", "update", "hide"].map((type) => engine.on(type, (detail) => handlers.current[type]?.(detail)));
+    enabled ? engine.enable() : engine.disable();
+    return () => {
+      offs.forEach((off) => off());
+      if (enabled) engine.disable();
+    };
+  }, [enabled]);
+}
+
+export function VisualSelectionLayer(options = {}) {
+  useVisualSelectionLayer(options);
+  return null;
+}
+
+export function VisualSelectionLayerScope({ as: Tag = "div", vars, ignore = false, className, style, ...props }) {
+  const custom = Object.fromEntries(Object.entries(vars ?? {}).map(([name, value]) => [toVar(name), value]));
+  const classes = [ignore ? "visual-selection-layer-ignore" : "visual-selection-layer-scope", className].filter(Boolean).join(" ");
+  return createElement(Tag, { className: classes, style: { ...custom, ...style }, ...props });
+}
+
+export default VisualSelectionLayer;

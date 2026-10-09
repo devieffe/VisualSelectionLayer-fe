@@ -1,11 +1,11 @@
 // Usage example: npm i react react-dom gsap, then render <App /> anywhere.
 import gsap from "gsap";
-import { VisualSelectionLayer, VisualSelectionLayerScope } from "./index.js";
+import { VisualSelectionLayerGsap, VisualSelectionLayerScope } from "./VisualSelectionLayerGsap.js";
 
 export default function App() {
   return (
     <main>
-      <VisualSelectionLayer gsap={gsap} effect="pop" vars={{ color: "#d4f53c", radius: "9px", "pad-x": "5px", "pad-y": "3px" }} />
+      <VisualSelectionLayerGsap gsap={gsap} effect="pop" vars={{ color: "#d4f53c", radius: "9px", "pad-x": "5px", "pad-y": "3px" }} />
       <h1>Select anything</h1>
       <p>Overlapping lines merge into one rounded layer.</p>
       <VisualSelectionLayerScope as="aside" vars={{ color: "#ffd7a6" }}>

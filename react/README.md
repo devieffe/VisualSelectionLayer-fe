@@ -4,28 +4,40 @@
 npm i react
 ```
 
-`VisualSelectionLayer.js` is a copy of `../html/VisualSelectionLayer.js`; keep the two in sync.
-Copy this folder from the repository into your project. The standalone `vsl` npm
-package does not include the React integration.
+Copy **one file** into your project: `VisualSelectionLayer.js` for CSS effects,
+or `VisualSelectionLayerGsap.js` for GSAP effects. Each includes the selection
+engine and React lifecycle logic, with no local imports. Mount only one version per page.
 
 ```jsx
-import gsap from "gsap"; // optional
-import { VisualSelectionLayer, VisualSelectionLayerScope } from "./react/index.js";
+import VisualSelectionLayer, { VisualSelectionLayerScope } from "./VisualSelectionLayer.js";
 
 <VisualSelectionLayer vars={{ color: "#d4f53c", radius: "9px" }} />            // CSS effects (--selection-effect)
-<VisualSelectionLayer gsap={gsap} effect="pop" />                              // GSAP: pop | rise | stretch | { show, hide }
 <VisualSelectionLayerScope as="aside" vars={{ color: "#ffd7a6" }}>…</VisualSelectionLayerScope> // scoped look
 <VisualSelectionLayerScope ignore>…</VisualSelectionLayerScope>                               // native selection
 ```
 
+```jsx
+import gsap from "gsap";
+import VisualSelectionLayerGsap from "./VisualSelectionLayerGsap.js";
+
+<VisualSelectionLayerGsap gsap={gsap} effect="pop" /> // pop | rise | stretch | { show, hide }
+```
+
+The packaged distribution provides `vsl/react` (the standard component),
+`vsl/react/VisualSelectionLayer`, and `vsl/react/VisualSelectionLayerGsap` entry points.
+
 Hooks: `useVisualSelectionLayer({ enabled, vars, onShow, onUpdate, onHide })`, `useVisualSelectionLayerGsap(gsap, effect)`, `useCssVars(vars, ref?)`.
 `vars` keys map to `--selection-<key>` (`"pad-x"` → `--selection-pad-x`).
 
-Without React: `visualSelectionLayerGsap(gsap, "rise")` after loading `VisualSelectionLayer.js`; it returns a dispose function.
+The GSAP file also exports `visualSelectionLayerGsap(gsap, "rise", engine)`, a
+low-level adapter that returns a dispose function, and `GSAP_EFFECTS`.
 Custom effect: `{ show: (gsap, fill) => tween, hide: (gsap, fill) => tween }`. Return the hide tween: the layer stays until it finishes.
 
 SSR-safe: the engine loads in an effect. Mount `<VisualSelectionLayer />` once per page.
 
+Import components and hooks directly from the chosen file. There are no wrapper
+or index files; use `VisualSelectionLayerGsap` explicitly for GSAP effects.
+Both embedded engines must be synchronized with `../html/VisualSelectionLayer.js` after engine changes.
 
 ## License
 

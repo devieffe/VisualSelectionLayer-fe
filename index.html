@@ -123,7 +123,8 @@
          The layer sits behind the content, so selected text shows in its own colour on the pink fill. */
       :root {
         --k: clamp(0px, (100vw - 375px) / 1065, 1px);
-        --selection-color: #ff4f9a;
+        --selection-color: #ff4f9a99;
+        --selection-exclude: select, .copy;
         --selection-text-color: #fff3f8;
         --selection-blend: normal;
         --selection-z-index: -1;
@@ -145,7 +146,7 @@
         h1, h2, h3 { @apply font-display; }
         h2 { @apply text-h2/[1.08] font-extrabold; }
         h3 { @apply text-h3/[1.25] font-extrabold; }
-        pre { @apply overflow-x-auto py-4.5 pr-16 pl-5 text-mono/[1.6]; }
+        pre { @apply overflow-x-auto py-4.5 px-5 text-mono/[1.6]; }
       }
 
       @utility wrap {
@@ -167,8 +168,29 @@
         .btn { @apply inline-flex items-center gap-[0.45em] rounded-2xl border-2 border-transparent px-[1.04em] py-[0.6em] text-btn/none font-bold; }
         .btn svg { @apply size-[1.1em] shrink-0; }
         .lead { @apply mt-19.5 max-w-[1100px] text-lead/[1.4]; }
-        .code { @apply mb-3.5 rounded-xl bg-under-code; }
-        .copy { @apply absolute top-[calc(var(--spacing)*4.5+var(--text-mono)*0.8-20px)] right-[5px] grid size-[40px] place-items-center rounded-lg bg-code text-muted select-none; }
+        .code { --copy-size: calc(var(--spacing) * 9 + var(--text-mono) * 1.6); @apply grid mb-5 rounded-xl bg-under-code; }
+        .code pre {
+          min-width: 0;
+          font-size: calc(var(--text-mono) * 0.9);
+          -webkit-mask: linear-gradient(#000 0 0), linear-gradient(#000 0 0);
+          -webkit-mask-size: 100% 100%, var(--copy-size) var(--copy-size);
+          -webkit-mask-position: 0 0, right 0 top 0;
+          -webkit-mask-repeat: no-repeat;
+          -webkit-mask-composite: source-out;
+          mask: linear-gradient(#000 0 0), linear-gradient(#000 0 0);
+          mask-size: 100% 100%, var(--copy-size) var(--copy-size);
+          mask-position: 0 0, right 0 top 0;
+          mask-repeat: no-repeat;
+          mask-composite: subtract;
+        }
+        .code + .code pre {
+          min-height: calc(var(--spacing) * 9 + var(--text-mono) * 8);
+          --copy-mask-height: calc((var(--copy-size) + 26px) / 2);
+          -webkit-mask-size: 100% 100%, var(--copy-size) var(--copy-mask-height);
+          mask-size: 100% 100%, var(--copy-size) var(--copy-mask-height);
+        }
+        .copy { @apply absolute grid size-[22px] p-0 m-0 border-0 bg-transparent text-muted select-none cursor-pointer; top: calc((var(--copy-size) - 22px) / 2); right: calc((var(--copy-size) - 22px) / 2); }
+        .copy, .copy * { user-select: none; -webkit-user-select: none; }
         .copy svg { @apply size-[22px]; }
         .copy .done, .copy.is-copied .idle { @apply hidden; }
         .copy.is-copied .done { @apply block text-ink; }
@@ -194,17 +216,17 @@
       </nav>
     </header>
 
-    <main id="main" tabindex="-1" class="outline-none">
+    <main id="main" tabindex="-1" class="mx-auto max-w-[1440px] outline-none">
       <section aria-labelledby="hero-title" class="wrap grid grid-cols-1 items-center gap-x-18 pt-26 pb-18 md:grid-cols-2">
         <div class="contents md:block">
-          <h1 id="hero-title" class="text-h1/[1.08] font-black tracking-[-0.01em]">Make every selection look designed</h1>
+          <h1 id="hero-title" class="text-h1/[1.08] font-black tracking-[-0.01em]">Make every selection <span class="hidden min-[1120px]:inline">look</span><span class="min-[1120px]:hidden">visually</span> designed</h1>
           <p class="order-2 mt-20 text-hero/[1.5] md:order-none md:mt-12">VisualSelectionLayer turns the browser’s patchy highlight into a smooth, padded, soft layer. Single script, zero dependencies.</p>
           <div class="order-2 mt-15 flex gap-[0.9em] text-btn *:whitespace-nowrap md:order-none">
             <a class="btn bg-under-ink px-[1.5em] text-white" href="#try">Try it free</a>
             <a class="btn" href="https://github.com/devieffe/vsl" rel="noopener"><svg viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>See on GitHub</a>
           </div>
         </div>
-        <figure class="order-1 mt-16 self-start md:order-none md:mt-6">
+        <figure class="order-1 mt-16 self-start md:order-none md:mt-6 min-[760px]:max-[900px]:mx-auto min-[760px]:max-[900px]:w-[90%]">
           <picture>
             <source srcset="demo-still.png" media="(prefers-reduced-motion: reduce)">
             <img class="w-full rounded-[18px]" src="demo.gif" alt="Selections across text, photos and small print merging into one rounded layer" width="640" height="422" fetchpriority="high">
@@ -215,7 +237,10 @@
 
       <section class="wrap mt-20 py-16" aria-labelledby="why">
         <h2 id="why">Why one layer</h2>
-        <p class="lead">The native highlight paints every line and element on its own. Rows overlap, gaps flicker between them, images turn blue and the corners stay sharp. VisualSelectionLayer draws the whole selection as a single shape, so it reads as one clean mark.</p>
+        <p class="lead">The native highlight paints every line and element on its own. Rows overlap, gaps flicker between them, images turn blue and the corners stay sharp.
+          VisualSelectionLayer draws the whole selection as a single shape, so it reads as one clean mark.
+          Plus! It's fully CSS customizable.
+          </p>
         <div class="mt-28 grid grid-cols-1 gap-16 md:grid-cols-3 [&_h3]:mb-5.5 [&_p]:mb-3.5 [&_p]:text-col/normal">
           <div>
             <h3>One shape, no seams</h3>
@@ -228,8 +253,8 @@
             <ul class="flex flex-wrap gap-x-5.5 gap-y-1.5 text-muted" aria-label="Tags"><li>padding</li><li>radius</li></ul>
           </div>
           <div>
-            <h3>Add it, that's it</h3>
-            <p>Add one script or the React component. Your HTML, copy and paste stay exactly as they are. Style it with CSS variables.</p>
+            <h3>Fully CSS customizable</h3>
+            <p>Design the selection’s color, padding, radius, image fill and effects with CSS variables, or override the layer styles directly. Add one script or React component; no dependencies.</p>
             <ul class="flex flex-wrap gap-x-5.5 gap-y-1.5 text-muted" aria-label="Tags"><li>vanilla JS</li><li>React</li><li>zero deps</li></ul>
           </div>
         </div>
@@ -237,7 +262,7 @@
 
       <section class="wrap mt-20 py-16" id="try" aria-labelledby="try-title">
         <h2 id="try-title">Try it</h2>
-        <p class="lead">Drag across the preview, switch fills and effects, tune merge, radius and padding.</p>
+        <p class="lead">Explore the preview. Try different colors, effects, merge settings, radius, and padding.</p>
         <div class="visual-selection-layer-ignore mt-26 select-none [&_.codepen]:h-[min(760px,85vh)] [&_iframe]:h-[min(760px,85vh)] [&_iframe]:w-full">
           <p class="codepen" data-height="760" data-default-tab="result" data-slug-hash="01a11b28-e88b-74b9-b587-37fc0b64fb94" data-pen-title="VisualSelectionLayer" data-user="devieffe">
             <span>See the Pen <a href="https://codepen.io/devieffe/pen/01a11b28-e88b-74b9-b587-37fc0b64fb94">VisualSelectionLayer</a> by Dev Ieffe on <a href="https://codepen.io">CodePen</a>.</span>
@@ -247,7 +272,7 @@
 
       <section class="wrap mt-20 py-16" id="install" aria-labelledby="install-title">
         <h2 id="install-title">Install</h2>
-        <div class="mt-24 grid grid-cols-1 gap-x-12 md:grid-cols-2 [&>div]:row-span-4 [&>div]:min-w-0 [&>div]:grid-cols-1 [&>div]:grid [&>div]:grid-rows-subgrid [&_h3]:mb-6 [&_p]:note [&_p]:wrap-break-word">
+        <div class="mt-24 flex flex-col gap-24 md:flex-row md:gap-12 [&>div]:min-w-0 [&>div]:flex-1 [&_h3]:mb-6 [&_p]:note [&_p]:wrap-break-word">
           <div>
             <h3>HTML</h3>
             <div class="code"><pre tabindex="0"><code>&lt;script src="VisualSelectionLayer.js"&gt;&lt;/script&gt;</code></pre><button class="copy" type="button" aria-label="Copy code"><svg class="idle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1"/></svg><svg class="done" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button></div>
@@ -256,17 +281,16 @@
   --selection-radius: 9px;
   --selection-effect: fade;
 }</code></pre><button class="copy" type="button" aria-label="Copy code"><svg class="idle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1"/></svg><svg class="done" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button></div>
-            <p>Copy <code>html/VisualSelectionLayer.js</code> into your project.</p>
+            <p>Copy html/VisualSelectionLayer.js into your project.</p>
           </div>
           <div>
-            <h3 class="mt-8 md:mt-0">React</h3>
+            <h3>React</h3>
             <div class="code"><pre tabindex="0"><code>npm i react</code></pre><button class="copy" type="button" aria-label="Copy code"><svg class="idle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1"/></svg><svg class="done" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button></div>
-            <p>Copy the repository's <code>react/</code> folder into your project.</p>
-            <div class="code"><pre tabindex="0"><code>import { VisualSelectionLayer }
-  from "./react/index.js";
+            <div class="code"><pre tabindex="0"><code>import VisualSelectionLayer
+  from "./VisualSelectionLayer.js";
 
 &lt;VisualSelectionLayer vars={{ color: "#d4f53c" }} /&gt;</code></pre><button class="copy" type="button" aria-label="Copy code"><svg class="idle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1"/></svg><svg class="done" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button></div>
-            <p>Optional GSAP effects: pop, rise, stretch.</p>
+            <p>Copy react/VisualSelectionLayer.js into your project.</p>
           </div>
         </div>
       </section>

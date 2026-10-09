@@ -3,22 +3,19 @@
   "version": "0.1.0",
   "description": "React components and hooks for Visual selection layer: one smooth, padded, rounded layer for the whole text selection.",
   "type": "module",
-  "main": "./index.js",
+  "main": "./VisualSelectionLayer.js",
   "exports": {
-    ".": "./index.js",
+    ".": "./VisualSelectionLayer.js",
+    "./VisualSelectionLayer": "./VisualSelectionLayer.js",
+    "./VisualSelectionLayerGsap": "./VisualSelectionLayerGsap.js",
     "./package.json": "./package.json"
   },
   "files": [
     "LICENSE.md",
-    "index.js",
-    "components.js",
-    "useVisualSelectionLayer.js",
     "VisualSelectionLayerGsap.js",
     "VisualSelectionLayer.js"
   ],
-  "sideEffects": [
-    "./VisualSelectionLayer.js"
-  ],
+  "sideEffects": false,
   "peerDependencies": {
     "gsap": ">=3",
     "react": ">=17"

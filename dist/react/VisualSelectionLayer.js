@@ -2,6 +2,7 @@ import { createElement, useEffect, useRef } from "react";
 
 /*
  * visual-selection-layer: single-layer selection highlight.
+ * Handles all main HTML tags; some use cases may require additional scripting or styling.
  *
  * Embedded engine: initialized by the React component's effect. It applies to every selectable element in <body>
  * and is configured only with CSS variables (defaults are injected with zero specificity, so

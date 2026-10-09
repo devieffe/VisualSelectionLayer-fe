@@ -8,6 +8,8 @@ Native text selection stacks a separate highlight for every line and element, so
 
 No dependencies, no build step, and your HTML stays the same.
 
+The script handles all main HTML tags, but some use cases may require additional scripting or styling.
+
 ## Install (HTML)
 
 1. Copy `html/VisualSelectionLayer.js` into your project.

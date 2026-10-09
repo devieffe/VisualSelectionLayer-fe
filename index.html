@@ -127,7 +127,7 @@
             <source srcset="demo-still.png" media="(prefers-reduced-motion: reduce)">
             <img class="w-full rounded-[18px]" src="demo-ml.gif" alt="Selections across text, photos and small print merging into one rounded layer" width="800" height="528" fetchpriority="high">
           </picture>
-          <figcaption class="note mt-3.5 text-center">Select anything on this page, it runs here too.</figcaption>
+          <figcaption class="note mt-3.5 text-center">Try to select anything on the page.</figcaption>
         </figure>
       </section>
 
@@ -141,17 +141,17 @@
           <div>
             <h3>One shape, no seams</h3>
             <p>Lines, words and blocks merge into one outline. Overlaps never double the colour and gaps between rows close up.</p>
-            <ul class="flex flex-wrap gap-x-5.5 gap-y-1.5 text-muted" aria-label="Tags"><li>union</li><li>no-overlap</li></ul>
+            <ul class="flex flex-wrap gap-x-5.5 gap-y-1.5 text-muted"><li>union</li><li>no-overlap</li></ul>
           </div>
           <div>
             <h3>Softer at every corner</h3>
             <p>Padding and radius apply to outer and inner corners alike, from large headings down to 2px steps beside small print.</p>
-            <ul class="flex flex-wrap gap-x-5.5 gap-y-1.5 text-muted" aria-label="Tags"><li>padding</li><li>radius</li></ul>
+            <ul class="flex flex-wrap gap-x-5.5 gap-y-1.5 text-muted"><li>padding</li><li>radius</li></ul>
           </div>
           <div>
             <h3>Fully CSS customizable</h3>
             <p>Design the selection’s color, padding, radius, image fill and effects with CSS variables, or override the layer styles directly.</p>
-            <ul class="flex flex-wrap gap-x-5.5 gap-y-1.5 text-muted" aria-label="Tags"><li>JS</li><li>React</li><li><span class="plex-mono">0</span> deps</li></ul>
+            <ul class="flex flex-wrap gap-x-5.5 gap-y-1.5 text-muted"><li>JS</li><li>React</li><li><span class="plex-mono">0</span> deps</li></ul>
           </div>
         </div>
       </section>
@@ -159,7 +159,7 @@
       <section class="wrap mt-20 py-16" id="try" aria-labelledby="try-title">
         <h2 id="try-title">Try it</h2>
         <p class="lead">Explore the preview. Try different colors, effects, merge settings, radius, and padding.</p>
-        <div class="codepen-frame visual-selection-layer-ignore mt-26 select-none" id="codepen-frame">
+        <div class="codepen-frame mt-26" id="codepen-frame">
           <div class="codepen-consent" id="codepen-consent">
             <p>The live preview is hosted on CodePen and uses cookies.</p>
             <button type="button" id="codepen-consent-accept">Accept</button>
@@ -198,7 +198,7 @@
 
     <footer class="wrap mt-40 flex flex-wrap justify-between gap-3 pt-9 pb-12 text-note/[1.5]">
       <p><span id="year" class="mr-2">2026</span><span class="font-bold text-ink">Dev Ieffe</span></p>
-      <p>Recent Chrome, Edge, Safari <span class="system-font">&amp;</span> more</p>
+      <p class="footer-browsers">Recent Chrome, Edge, Safari <span class="system-font">&amp;</span> more</p>
     </footer>
     <aside class="cookie-notice" id="cookie-notice" aria-label="Cookie notice" hidden>
       <p>This site uses cookies and third-party embeds for site features and preview content.</p>
@@ -212,6 +212,17 @@
     <script>
       document.getElementById("year").textContent = new Date().getFullYear();
 
+      const hero = document.querySelector('[aria-labelledby="hero-title"]');
+      const heroFigure = hero.querySelector("figure");
+      const heroTitle = document.getElementById("hero-title");
+      const wideHero = matchMedia("(min-width: 1025px)");
+      const syncHeroOrder = () => {
+        if (wideHero.matches) hero.append(heroFigure);
+        else heroTitle.after(heroFigure);
+      };
+      syncHeroOrder();
+      wideHero.addEventListener("change", syncHeroOrder);
+
       const cookieNotice = document.getElementById("cookie-notice");
       const cookieChoiceKey = "vsl-cookie-choice";
       let cookieChoice = null;
@@ -221,6 +232,7 @@
         console.error("Could not read the cookie choice.", error);
       }
       cookieNotice.hidden = cookieChoice === "alright" || cookieChoice === "decline";
+      document.documentElement.classList.toggle("cookie-choice-made", cookieChoice === "alright" || cookieChoice === "decline");
 
       const loadScript = (src, account) => {
         const script = document.createElement("script");
@@ -265,6 +277,7 @@
         } catch (error) {
           console.error("Could not save the cookie choice.", error);
         }
+        document.documentElement.classList.add("cookie-choice-made");
         cookieNotice.classList.add("is-leaving");
         setTimeout(() => {
           cookieNotice.hidden = true;
@@ -322,5 +335,259 @@
       });
     </script>
     <script src="html/VisualSelectionLayer.js"></script>
+    <script>
+      (() => {
+        const engine = window.VisualSelectionLayer;
+        const ns = "http://www.w3.org/2000/svg";
+        const probe = document.createElementNS(ns, "svg");
+        probe.setAttribute("aria-hidden", "true");
+        probe.style.cssText = "position:fixed;width:0;height:0;overflow:hidden;pointer-events:none";
+        document.body.append(probe);
+        let regions = [];
+        let active = false;
+        let pending = 0;
+        let cleanupTimer = 0;
+        const markedText = new Map();
+        const markedCovers = new Set();
+        const imageUrl = (svg) => `url("data:image/svg+xml,${encodeURIComponent(svg)}")`;
+        const palette = () => {
+          const dark = Math.random() < 0.5;
+          const rgb = (hue, saturation, lightness) => {
+            const l = lightness / 100;
+            const a = saturation / 100 * Math.min(l, 1 - l);
+            return [0, 8, 4].map((n) => {
+              const k = (n + hue / 30) % 12;
+              return Math.round(255 * (l - a * Math.max(-1, Math.min(k - 3, 9 - k, 1))));
+            });
+          };
+          const luminance = (color) => color.reduce((sum, channel, i) => {
+            const c = channel / 255;
+            return sum + (c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4) * [0.2126, 0.7152, 0.0722][i];
+          }, 0);
+          const base = rgb(Math.random() * 360, 35 + Math.random() * 45, dark ? 18 + Math.random() * 16 : 78 + Math.random() * 12);
+          const hue = Math.random() * 360;
+          const saturation = 60 + Math.random() * 35;
+          let lightness = dark ? 65 + Math.random() * 20 : 20 + Math.random() * 20;
+          let text = rgb(hue, saturation, lightness);
+          const bg = luminance(base);
+          const lighten = bg < 0.179;
+          const contrast = () => {
+            const fg = luminance(text);
+            return (Math.max(bg, fg) + 0.05) / (Math.min(bg, fg) + 0.05);
+          };
+          // Keep the random hue, adjusting only lightness until the pair is readable.
+          while (contrast() < 4.5 && lightness > 0 && lightness < 100) {
+            lightness = Math.max(0, Math.min(100, lightness + (lighten ? 1 : -1)));
+            text = rgb(hue, saturation, lightness);
+          }
+          return { base: `rgb(${base.join(", ")})`, text: `rgb(${text.join(", ")})` };
+        };
+        const restoreText = (keep = new Set()) => {
+          for (const [el, saved] of markedText) {
+            if (keep.has(el)) continue;
+            for (const [name, value, priority] of saved) {
+              if (value) el.style.setProperty(name, value, priority);
+              else el.style.removeProperty(name);
+            }
+            el.removeAttribute("data-selection-piece-text");
+            markedText.delete(el);
+          }
+        };
+        const markText = (el, color) => {
+          if (!markedText.has(el)) {
+            markedText.set(el, ["--selection-text-color", "--selection-piece-text"].map((name) =>
+              [name, el.style.getPropertyValue(name), el.style.getPropertyPriority(name)]));
+          }
+          if (el.style.getPropertyValue("--selection-piece-text") !== color) {
+            el.style.setProperty("--selection-text-color", color);
+            el.style.setProperty("--selection-piece-text", color);
+          }
+          if (!el.hasAttribute("data-selection-piece-text")) el.setAttribute("data-selection-piece-text", "");
+        };
+        const readPath = (fill) => {
+          const style = getComputedStyle(fill);
+          const clip = style.clipPath !== "none" ? style.clipPath : style.webkitClipPath;
+          const match = clip?.match(/^path\(["'](.*)["']\)$/);
+          if (match) return match[1];
+          const mask = style.maskImage !== "none" ? style.maskImage : style.webkitMaskImage;
+          const svg = mask?.match(/data:image\/svg\+xml,([^"]+)/);
+          return svg ? new DOMParser().parseFromString(decodeURIComponent(svg[1]), "image/svg+xml")
+            .querySelector("path")?.getAttribute("d") : null;
+        };
+        const coverSvg = (el) => {
+          const match = el.style.backgroundImage.match(/data:image\/svg\+xml,([^"]+)/);
+          return match ? new DOMParser().parseFromString(decodeURIComponent(match[1]), "image/svg+xml")
+            .documentElement : null;
+        };
+        const render = () => {
+          pending = 0;
+          if (!active || !engine.enabled) return;
+          const selectedText = new Set();
+          probe.replaceChildren();
+          const surfaces = [];
+          const isFixed = (el) => {
+            for (let node = el; node; node = node.parentElement) {
+              if (getComputedStyle(node).position === "fixed") return true;
+            }
+            return false;
+          };
+          const fill = document.querySelector(".visual-selection-layer-overlay__fill");
+          const mainPath = fill && readPath(fill);
+          if (mainPath) surfaces.push({ el: fill, d: mainPath, rect: fill.getBoundingClientRect(), fixed: false, opacity: 1 });
+          for (const el of document.querySelectorAll("[data-visual-selection-layer-covered]")) {
+            const svg = coverSvg(el);
+            const path = svg?.querySelector("path");
+            if (!path) continue;
+            surfaces.push({
+              el, d: path.getAttribute("d"), rect: el.getBoundingClientRect(),
+              fixed: isFixed(el),
+              opacity: path.getAttribute("fill-opacity") ?? 1,
+              cover: true,
+            });
+          }
+          const next = [];
+          const reused = new Set();
+          for (const surface of surfaces) {
+            for (const d of surface.d.match(/M[^M]+/g) ?? []) {
+              const path = document.createElementNS(ns, "path");
+              path.setAttribute("d", d);
+              probe.append(path);
+              const b = path.getBBox();
+              if (!b.width || !b.height) continue;
+              const length = path.getTotalLength();
+              const points = Array.from({ length: 64 }, (_, i) => path.getPointAtLength(length * i / 64));
+              const area = points.reduce((sum, p, i) => {
+                const q = points[(i + 1) % points.length];
+                return sum + p.x * q.y - q.x * p.y;
+              }, 0);
+              if (area < 0) continue;
+              const offset = surface.fixed ? 0 : scrollY;
+              const x = surface.rect.left + b.x + (surface.fixed ? 0 : scrollX);
+              const y = surface.rect.top + b.y + offset;
+              let best = null;
+              let score = 0;
+              for (const old of regions) {
+                if (old.surface.el !== surface.el || reused.has(old)) continue;
+                const overlap = Math.max(0, Math.min(x + b.width, old.x + old.width) - Math.max(x, old.x)) *
+                  Math.max(0, Math.min(y + b.height, old.y + old.height) - Math.max(y, old.y));
+                if (overlap > score) { score = overlap; best = old; }
+              }
+              if (best) reused.add(best);
+              const region = { x, y, width: b.width, height: b.height, fixed: surface.fixed, colors: best?.colors ?? palette(), path, surface };
+              next.push(region);
+            }
+          }
+          regions = next;
+          const banner = document.getElementById("cookie-notice");
+          const bannerRegions = regions.filter((region) => region.surface.el === banner);
+          for (const region of regions) {
+            if (region.surface.el === banner || !banner.contains(region.surface.el)) continue;
+            const parent = bannerRegions.find((candidate) =>
+              candidate.path.isPointInFill(new DOMPoint(
+                region.x + region.width / 2 - candidate.surface.rect.left,
+                region.y + region.height / 2 - candidate.surface.rect.top)));
+            if (parent) region.colors = parent.colors;
+          }
+          const artwork = (rect, items, opacity = 1) => {
+            const defs = [];
+            const shapes = items.map((region, i) => {
+              const { colors, surface, path } = region;
+              defs.push(`<clipPath id="c${i}"><path d="${surface.d}"/></clipPath>`);
+              return `<g transform="translate(${surface.rect.left - rect.left} ${surface.rect.top - rect.top})" clip-path="url(#c${i})"><path d="${path.getAttribute("d")}" fill="${colors.base}"/></g>`;
+            }).join("");
+            return imageUrl(`<svg xmlns="${ns}" width="${rect.width}" height="${rect.height}" viewBox="0 0 ${rect.width} ${rect.height}"><defs>${defs.join("")}</defs><g opacity="${opacity}">${shapes}</g></svg>`);
+          };
+          const setImage = (el, image) => {
+            if (el.style.getPropertyValue("--selection-piece-image") !== image) el.style.setProperty("--selection-piece-image", image);
+          };
+          for (const surface of surfaces) {
+            const items = surface.el !== banner && banner.contains(surface.el) && bannerRegions.length
+              ? bannerRegions : regions.filter((r) => r.surface === surface);
+            setImage(surface.el, artwork(surface.rect, items, surface.opacity));
+            if (surface.cover) {
+              surface.el.setAttribute("data-selection-piece-cover", "");
+              markedCovers.add(surface.el);
+            }
+          }
+          for (const el of document.querySelectorAll(".visual-selection-layer-foreground > div > div, .visual-selection-layer-tints > div")) {
+            setImage(el, artwork(el.getBoundingClientRect(), regions));
+          }
+          const selection = getSelection();
+          const contains = (region, x, y) =>
+            region.path.isPointInFill(new DOMPoint(x - region.surface.rect.left, y - region.surface.rect.top));
+          const pick = (rect, el) => {
+            const cover = el.closest("[data-visual-selection-layer-covered]");
+            return regions.find((region) =>
+              region.surface.el === (cover ?? fill) &&
+              contains(region, rect.left + rect.width / 2, rect.top + rect.height / 2));
+          };
+          if (selection?.rangeCount) {
+            const range = selection.getRangeAt(0);
+            const root = range.commonAncestorContainer;
+            const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+            const nodes = root.nodeType === Node.TEXT_NODE ? [root] : [];
+            for (let node = walker.nextNode(); node; node = walker.nextNode()) nodes.push(node);
+            for (const node of nodes) {
+              if (!node.textContent.trim() || !range.intersectsNode(node)) continue;
+              const part = document.createRange();
+              part.selectNodeContents(node);
+              if (node === range.startContainer) part.setStart(node, range.startOffset);
+              if (node === range.endContainer) part.setEnd(node, range.endOffset);
+              const region = [...part.getClientRects()].map((rect) => pick(rect, node.parentElement)).find(Boolean);
+              if (region) {
+                selectedText.add(node.parentElement);
+                markText(node.parentElement, region.colors.text);
+              }
+            }
+            for (const svg of document.querySelectorAll('svg[data-visual-selection-layer-svg="on"]')) {
+              const region = pick(svg.getBoundingClientRect(), svg);
+              if (region) {
+                selectedText.add(svg);
+                markText(svg, region.colors.text);
+              }
+            }
+          }
+          restoreText(selectedText);
+        };
+        const schedule = () => {
+          if (active && !pending) pending = requestAnimationFrame(render);
+        };
+        engine.on("show", () => {
+          clearTimeout(cleanupTimer);
+          if (!active) regions = [];
+          active = true;
+          render();
+        });
+        engine.on("update", render);
+        engine.on("hide", () => {
+          active = false;
+          if (pending) cancelAnimationFrame(pending);
+          pending = 0;
+          const duration = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--selection-effect-duration")) || 0;
+          cleanupTimer = setTimeout(() => {
+            restoreText();
+            regions = [];
+            for (const el of markedCovers) {
+              el.removeAttribute("data-selection-piece-cover");
+              el.style.removeProperty("--selection-piece-image");
+            }
+            markedCovers.clear();
+          }, duration + 100);
+        });
+        // Fixed covers animate via background images rather than the public fill element.
+        const coverImages = new WeakMap();
+        new MutationObserver((records) => {
+          let changed = false;
+          for (const { target } of records) {
+            if (!target.hasAttribute("data-visual-selection-layer-covered")) continue;
+            const image = target.style.backgroundImage;
+            if (coverImages.get(target) === image) continue;
+            coverImages.set(target, image);
+            changed = true;
+          }
+          if (changed) schedule();
+        }).observe(document.body, { attributes: true, attributeFilter: ["style"], subtree: true });
+      })();
+    </script>
   </body>
 </html>

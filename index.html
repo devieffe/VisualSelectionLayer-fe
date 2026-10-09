@@ -88,9 +88,6 @@
         ]
       }
     </script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono&family=Lato:wght@400;700&family=Montserrat:wght@800;900&display=swap">
     <link rel="stylesheet" href="style.css">
   </head>
   <body class="pt-(--bar-h)">
@@ -159,10 +156,10 @@
       <section class="wrap mt-20 py-16" id="try" aria-labelledby="try-title">
         <h2 id="try-title">Try it</h2>
         <p class="lead">Explore the preview. Try different colors, effects, merge settings, radius, and padding.</p>
-        <div class="codepen-frame mt-26" id="codepen-frame">
+        <div class="codepen-frame mt-26" id="codepen-frame" data-declined>
           <div class="codepen-consent" id="codepen-consent">
-            <p>The live preview is hosted on CodePen and uses cookies.</p>
-            <button type="button" id="codepen-consent-accept">Accept</button>
+            <p>The optional live preview connects to CodePen, which receives device information and may use cookies. <a href="privacy.html">Privacy details</a>.</p>
+            <button type="button" id="codepen-consent-accept">Enable CodePen preview</button>
           </div>
           <p class="codepen" data-height="760" data-default-tab="result" data-slug-hash="01a11b28-e88b-74b9-b587-37fc0b64fb94" data-pen-title="VisualSelectionLayer" data-user="devieffe">
             <span>See the Pen <a href="https://codepen.io/devieffe/pen/01a11b28-e88b-74b9-b587-37fc0b64fb94">VisualSelectionLayer</a> by Dev Ieffe on <a href="https://codepen.io">CodePen</a>.</span>
@@ -196,17 +193,52 @@
       </section>
     </main>
 
+    <nav class="privacy-controls wrap" aria-label="Privacy">
+      <a href="privacy.html">Privacy notice</a>
+      <button type="button" id="privacy-settings">Privacy</button>
+      <button type="button" id="consent-settings-open">Consent settings</button>
+    </nav>
     <footer class="wrap mt-40 flex flex-wrap justify-between gap-3 pt-9 pb-12 text-note/[1.5]">
       <p><span id="year" class="mr-2">2026</span><span class="font-bold text-ink">Dev Ieffe</span></p>
       <p class="footer-browsers">Recent Chrome, Edge, Safari <span class="system-font">&amp;</span> more</p>
     </footer>
     <aside class="cookie-notice" id="cookie-notice" aria-label="Cookie notice" hidden>
-      <p>This site uses cookies and third-party embeds for site features and preview content.</p>
+      <p>The web page and the demo needs no consent. CodePen previews and UserWay accessibility tools may use third-party cookies. They load only with your consent.</p>
       <div class="cookie-notice-actions">
-        <button type="button" id="cookie-notice-accept">Accept</button>
-        <button type="button" id="cookie-notice-decline">Decline</button>
+        <button type="button" id="cookie-notice-accept">Accept all</button>
+        <button type="button" id="cookie-notice-decline">Reject all</button>
+        <button type="button" id="cookie-notice-settings">Privacy</button>
       </div>
     </aside>
+    <dialog id="privacy-dialog" class="consent-settings" aria-labelledby="privacy-title">
+      <div class="consent-settings-header">
+        <h2 id="privacy-title">Privacy</h2>
+        <button type="button" id="privacy-close" class="consent-dialog-close" aria-label="Close privacy">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+        </button>
+      </div>
+      <p>VisualSelectionLayer web page processes text selections locally in your browser and does not send selected text to its developers. The hosting provider may process technical data to deliver and secure this website. No advertising tracking is used.</p>
+      <p>Contact: <a href="mailto:webmail@ieffe.dev">webmail@ieffe.dev</a></p>
+    </dialog>
+    <dialog id="consent-settings" class="consent-settings" aria-labelledby="consent-title">
+      <div class="consent-settings-header">
+        <h2 id="consent-title">Consent settings</h2>
+        <button type="button" id="consent-close" class="consent-dialog-close" aria-label="Close consent settings">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+        </button>
+      </div>
+      <p>Both services are optional. You can use this site without enabling them and change your choice at any time.</p>
+      <label><input type="checkbox" id="consent-codepen"> CodePen live preview</label>
+      <p>Loads the interactive demo from CodePen, sharing device and connection information with its providers.</p>
+      <label><input type="checkbox" id="consent-userway"> UserWay accessibility widget</label>
+      <p>Loads third-party accessibility controls, sharing device and connection information with UserWay.</p>
+      <p>We remember your preference locally for 180 days. <a href="privacy.html">Read the privacy notice</a>.</p>
+      <p id="consent-error" role="alert"></p>
+      <div class="consent-settings-actions">
+        <button type="button" id="consent-save">Save preferences</button>
+        <button type="button" id="consent-reject">Reject all / withdraw consent</button>
+      </div>
+    </dialog>
     <p class="sr-only" id="status" role="status" aria-live="polite"></p>
 
     <script>
@@ -225,14 +257,27 @@
 
       const cookieNotice = document.getElementById("cookie-notice");
       const cookieChoiceKey = "vsl-cookie-choice";
+      const consentVersion = 1;
+      const consentLifetime = 180 * 24 * 60 * 60 * 1000;
+      const consentDialog = document.getElementById("consent-settings");
+      const privacyDialog = document.getElementById("privacy-dialog");
+      const consentError = document.getElementById("consent-error");
       let cookieChoice = null;
       try {
-        cookieChoice = localStorage.getItem(cookieChoiceKey);
+        const saved = localStorage.getItem(cookieChoiceKey);
+        if (saved && saved !== "alright" && saved !== "decline") {
+          const record = JSON.parse(saved);
+          if (record && record.version === consentVersion &&
+              typeof record.codepen === "boolean" && typeof record.userway === "boolean" &&
+              Number.isFinite(record.timestamp) && record.timestamp <= Date.now() &&
+              Date.now() - record.timestamp < consentLifetime) cookieChoice = record;
+          else console.info("Privacy preferences are outdated; a new choice is required.");
+        }
       } catch (error) {
         console.error("Could not read the cookie choice.", error);
       }
-      cookieNotice.hidden = cookieChoice === "alright" || cookieChoice === "decline";
-      document.documentElement.classList.toggle("cookie-choice-made", cookieChoice === "alright" || cookieChoice === "decline");
+      cookieNotice.hidden = cookieChoice !== null;
+      document.documentElement.classList.toggle("cookie-choice-made", cookieChoice !== null);
 
       const loadScript = (src, account) => {
         const script = document.createElement("script");
@@ -260,8 +305,7 @@
         codepenHost.insertAdjacentHTML("beforeend", codepenFallback);
         codepenHost.setAttribute("data-declined", "");
       };
-      if (cookieChoice === "decline") codepenHost.setAttribute("data-declined", "");
-      else loadCodepen();
+      if (cookieChoice?.codepen) loadCodepen();
 
       let userwayLoaded = false;
       const loadUserway = () => {
@@ -269,13 +313,26 @@
         userwayLoaded = true;
         loadScript("https://cdn.userway.org/widget.js", "VI8yldchCb");
       };
-      if (cookieChoice === "alright") loadUserway();
+      if (cookieChoice?.userway) loadUserway();
 
-      const saveCookieChoice = (choice) => {
+      const saveCookieChoice = ({ codepen, userway }) => {
+        const choice = { version: consentVersion, timestamp: Date.now(), codepen, userway };
         try {
-          localStorage.setItem(cookieChoiceKey, choice);
+          localStorage.setItem(cookieChoiceKey, JSON.stringify(choice));
         } catch (error) {
           console.error("Could not save the cookie choice.", error);
+          consentError.textContent = "Your preference could not be saved. Please allow site storage in your browser and try again. Optional services have not been changed.";
+          if (!consentDialog.open) consentDialog.showModal();
+          return;
+        }
+        const withdrawingService = (userwayLoaded && !userway) || (codepenScript !== null && !codepen);
+        cookieChoice = choice;
+        consentError.textContent = "";
+        if (consentDialog.open) consentDialog.close();
+        // Removing a script cannot stop running third-party code; reload with the saved refusal.
+        if (withdrawingService) {
+          location.reload();
+          return;
         }
         document.documentElement.classList.add("cookie-choice-made");
         cookieNotice.classList.add("is-leaving");
@@ -283,14 +340,42 @@
           cookieNotice.hidden = true;
           cookieNotice.classList.remove("is-leaving");
         }, matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 300);
-        if (choice === "alright") {
-          loadUserway();
-          loadCodepen();
-        } else unloadCodepen();
+        if (userway) loadUserway();
+        if (codepen) loadCodepen();
+        else unloadCodepen();
       };
-      document.getElementById("codepen-consent-accept").addEventListener("click", () => saveCookieChoice("alright"));
-      document.getElementById("cookie-notice-accept").addEventListener("click", () => saveCookieChoice("alright"));
-      document.getElementById("cookie-notice-decline").addEventListener("click", () => saveCookieChoice("decline"));
+      const openConsentSettings = () => {
+        document.getElementById("consent-codepen").checked = cookieChoice?.codepen ?? false;
+        document.getElementById("consent-userway").checked = cookieChoice?.userway ?? false;
+        consentError.textContent = "";
+        if (!consentDialog.open) consentDialog.showModal();
+      };
+      const rejectAll = () => saveCookieChoice({ codepen: false, userway: false });
+      const openPrivacy = () => {
+        if (!privacyDialog.open) privacyDialog.showModal();
+      };
+      document.getElementById("privacy-settings").addEventListener("click", openPrivacy);
+      document.getElementById("cookie-notice-settings").addEventListener("click", openPrivacy);
+      document.getElementById("consent-settings-open").addEventListener("click", openConsentSettings);
+      document.getElementById("consent-save").addEventListener("click", () => saveCookieChoice({
+        codepen: document.getElementById("consent-codepen").checked,
+        userway: document.getElementById("consent-userway").checked,
+      }));
+      document.getElementById("consent-reject").addEventListener("click", rejectAll);
+      document.getElementById("consent-close").addEventListener("click", () => consentDialog.close());
+      document.getElementById("privacy-close").addEventListener("click", () => privacyDialog.close());
+      [privacyDialog, consentDialog].forEach((dialog) => {
+        dialog.addEventListener("keydown", (event) => {
+          if (event.key !== "Escape") return;
+          event.preventDefault();
+          dialog.close();
+        });
+      });
+      if (location.hash === "#privacy-settings") openConsentSettings();
+      document.getElementById("codepen-consent-accept").addEventListener("click", () =>
+        saveCookieChoice({ codepen: true, userway: cookieChoice?.userway ?? false }));
+      document.getElementById("cookie-notice-accept").addEventListener("click", () => saveCookieChoice({ codepen: true, userway: true }));
+      document.getElementById("cookie-notice-decline").addEventListener("click", rejectAll);
 
       const header = document.querySelector("header");
       const toggle = document.getElementById("menu-toggle");

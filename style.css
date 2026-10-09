@@ -1,4 +1,39 @@
 /*! tailwindcss v4.3.3 | MIT License | https://tailwindcss.com */
+@font-face {
+  font-family: "IBM Plex Mono";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("fonts/ibm-plex-mono-400.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Lato";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("fonts/lato-400.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Lato";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("fonts/lato-700.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url("fonts/montserrat-800.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 900;
+  font-display: swap;
+  src: url("fonts/montserrat-900.ttf") format("truetype");
+}
 @layer properties;
 @layer theme, base, components, utilities;
 @layer theme {
@@ -1011,7 +1046,7 @@ svg[data-selection-piece-text] * {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 32px;
+    gap: 0.75em;
     background: white;
     padding: 14px var(--content-gutter) calc(18px + env(safe-area-inset-bottom));
     font-size: 16px;
@@ -1048,19 +1083,14 @@ svg[data-selection-piece-text] * {
     padding: 0 20px;
     line-height: 1;
   }
-  #cookie-notice-accept {
+  #cookie-notice-accept,
+  #cookie-notice-decline,
+  #cookie-notice-settings {
     border: 1px solid #111;
     border-radius: 8px;
-    background: #111;
-    color: white;
-  }
-  #cookie-notice-decline {
-    border: 1px solid transparent;
-    border-radius: 8px;
-    background: transparent;
+    background: white;
     color: #111;
-    width: 74px;
-    padding: 0;
+    padding: 0 20px;
   }
   .codepen-frame {
     position: relative;
@@ -1117,9 +1147,18 @@ svg[data-selection-piece-text] * {
       flex: 0 1 auto;
     }
   }
-  @media (max-width: 720px) {
+  @media (max-width: 900px) and (min-width: 580px) {
     .cookie-notice {
-      gap: 36px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .cookie-notice p {
+      flex-basis: 100%;
+    }
+  }
+  @media (max-width: 720px) {
+    .cookie-notice p {
+      font-size: 15px;
     }
   }
   @media (max-width: 579px) {
@@ -1132,11 +1171,117 @@ svg[data-selection-piece-text] * {
     #cookie-notice-decline {
       width: auto;
       padding: 0 20px;
-      border-color: #999;
+      border-color: #111;
     }
   }
+    .privacy-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 24px;
+      margin-top: 48px;
+      font-size: 15px;
+    }
+    .privacy-controls a,
+    .privacy-controls button {
+      cursor: pointer;
+      text-decoration: underline;
+    }
+    .cookie-notice a,
+    .codepen-consent a,
+    .consent-settings a,
+    .privacy-page a {
+      text-decoration: underline;
+    }
+    .consent-settings {
+      inset: 0;
+      margin: auto;
+      width: min(560px, calc(100% - 32px));
+      max-height: calc(100% - 32px);
+      overflow-y: auto;
+      padding: 28px;
+      border: 1px solid #999;
+      border-radius: 16px;
+      background: white;
+      color: #111;
+      font-size: 16px;
+    }
+    .consent-settings::backdrop {
+      background: #0006;
+    }
+    .consent-settings h2 {
+      font-size: 24px;
+    }
+    .consent-settings-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .consent-dialog-close {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex: none;
+      width: 40px;
+      height: 40px;
+      margin-right: -8px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .consent-dialog-close svg {
+      width: 24px;
+      height: 24px;
+    }
+    .consent-settings p {
+      margin-block: 16px;
+      line-height: 1.5;
+    }
+    .consent-settings label {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 700;
+    }
+    .consent-settings input {
+      appearance: auto;
+      width: 18px;
+      height: 18px;
+    }
+    .consent-settings-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .consent-settings-actions button {
+      padding: 10px 16px;
+      border: 1px solid #111;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    #consent-error:not(:empty) {
+      color: #a00000;
+    }
+    .privacy-page {
+      max-width: 800px;
+      padding: 32px 24px;
+      margin-inline: auto;
+      font-size: 18px;
+      line-height: 1.6;
+    }
+    .privacy-page h1 {
+      font-size: 36px;
+    }
+    .privacy-page h2 {
+      margin-top: 32px;
+      font-size: 24px;
+    }
+    .privacy-page p {
+      margin-block: 16px;
+    }
   .cookie-notice button,
+  #cookie-notice-accept,
   #cookie-notice-decline,
+  #cookie-notice-settings,
   #codepen-consent-accept {
     padding-bottom: 1px;
   }

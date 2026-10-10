@@ -10,7 +10,7 @@ No dependencies, no build step, and your HTML stays the same.
 
 The script handles all main HTML tags, but some use cases may require additional scripting or styling.
 
-The promo website blocks CodePen and UserWay until an explicit, separate preference is given. Privacy settings remain available for withdrawal; fonts are self-hosted. See [the website privacy notice](privacy.html). This website consent layer is separate from the dependency-free selection engine.
+The promo website loads CodePen by default unless a saved preference disables it. UserWay waits for consent; fonts are self-hosted. Preferences can be changed in [the website Privacy modal](index.html#privacy-settings). Default CodePen loading is not a prior-consent mechanism. This website preference layer is separate from the dependency-free selection engine.
 
 ## Install (HTML)
 

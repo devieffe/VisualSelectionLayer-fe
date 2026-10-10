@@ -1195,13 +1195,15 @@ svg[data-selection-piece-text] * {
     }
     .consent-settings {
       inset: 0;
-      margin: auto;
-      width: min(560px, calc(100% - 32px));
-      max-height: calc(100% - 32px);
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      max-width: none;
+      max-height: none;
       overflow-y: auto;
       padding: var(--content-gutter);
       border: 0;
-      border-radius: 16px;
+      border-radius: 0;
       background: white;
       color: #111;
       font-size: 16px;
@@ -1209,10 +1211,9 @@ svg[data-selection-piece-text] * {
     .consent-settings::backdrop {
       background: white;
     }
-    @media (max-width: 720px) {
-      .consent-settings {
-        width: 100%;
-        max-width: none;
+    @media (width < 561px) {
+      #menu a {
+        font-size: 18px;
       }
     }
     .consent-settings,
